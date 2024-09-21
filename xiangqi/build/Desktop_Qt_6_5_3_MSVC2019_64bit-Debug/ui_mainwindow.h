@@ -10,11 +10,15 @@
 #define UI_MAINWINDOW_H
 
 #include <QtCore/QVariant>
-#include <QtGui/QIcon>
+#include <QtGui/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QGridLayout>
 #include <QtWidgets/QMainWindow>
-#include <QtWidgets/QToolButton>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QMenuBar>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QSpacerItem>
+#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -22,11 +26,17 @@ QT_BEGIN_NAMESPACE
 class Ui_MainWindow
 {
 public:
+    QAction *action;
     QWidget *centralwidget;
+    QGridLayout *gridLayout;
     QWidget *widget;
-    QHBoxLayout *horizontalLayout;
-    QToolButton *toolButton;
-    QToolButton *toolButton_2;
+    QVBoxLayout *verticalLayout;
+    QSpacerItem *horizontalSpacer_2;
+    QPushButton *pushButton;
+    QSpacerItem *horizontalSpacer;
+    QSpacerItem *verticalSpacer;
+    QMenuBar *menuBar;
+    QMenu *menu;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -38,37 +48,75 @@ public:
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(MainWindow->sizePolicy().hasHeightForWidth());
         MainWindow->setSizePolicy(sizePolicy);
+        action = new QAction(MainWindow);
+        action->setObjectName("action");
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName("centralwidget");
+        gridLayout = new QGridLayout(centralwidget);
+        gridLayout->setObjectName("gridLayout");
         widget = new QWidget(centralwidget);
         widget->setObjectName("widget");
-        widget->setGeometry(QRect(220, 410, 581, 111));
         sizePolicy.setHeightForWidth(widget->sizePolicy().hasHeightForWidth());
         widget->setSizePolicy(sizePolicy);
-        horizontalLayout = new QHBoxLayout(widget);
-        horizontalLayout->setObjectName("horizontalLayout");
-        toolButton = new QToolButton(widget);
-        toolButton->setObjectName("toolButton");
-        QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        verticalLayout = new QVBoxLayout(widget);
+        verticalLayout->setObjectName("verticalLayout");
+
+        gridLayout->addWidget(widget, 1, 1, 1, 1);
+
+        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout->addItem(horizontalSpacer_2, 3, 2, 1, 1);
+
+        pushButton = new QPushButton(centralwidget);
+        pushButton->setObjectName("pushButton");
+        QSizePolicy sizePolicy1(QSizePolicy::Minimum, QSizePolicy::Fixed);
         sizePolicy1.setHorizontalStretch(0);
         sizePolicy1.setVerticalStretch(0);
-        sizePolicy1.setHeightForWidth(toolButton->sizePolicy().hasHeightForWidth());
-        toolButton->setSizePolicy(sizePolicy1);
-        QIcon icon;
-        icon.addFile(QString::fromUtf8(":/mainscene/OIP-C.jpg"), QSize(), QIcon::Normal, QIcon::Off);
-        toolButton->setIcon(icon);
-        toolButton->setIconSize(QSize(20, 200));
+        sizePolicy1.setHeightForWidth(pushButton->sizePolicy().hasHeightForWidth());
+        pushButton->setSizePolicy(sizePolicy1);
+        pushButton->setMinimumSize(QSize(250, 80));
+        pushButton->setStyleSheet(QString::fromUtf8("QPushButton\n"
+"{\n"
+"	color:black;\n"
+"\n"
+"	font: 30pt \"\345\215\216\346\226\207\350\241\214\346\245\267\";\n"
+"\n"
+"	background-color:#ffbb46;\n"
+"\n"
+"	border-radius:40px;\n"
+"}\n"
+"\n"
+"QPushButton:hover\n"
+"{\n"
+"	color:black;\n"
+"\n"
+"	font: 30pt \"\345\215\216\346\226\207\350\241\214\346\245\267\";\n"
+"\n"
+"	background-color:#fffb8b;\n"
+"\n"
+"	border-radius:40px;\n"
+"}"));
 
-        horizontalLayout->addWidget(toolButton);
+        gridLayout->addWidget(pushButton, 3, 1, 1, 1);
 
-        toolButton_2 = new QToolButton(widget);
-        toolButton_2->setObjectName("toolButton_2");
-        sizePolicy1.setHeightForWidth(toolButton_2->sizePolicy().hasHeightForWidth());
-        toolButton_2->setSizePolicy(sizePolicy1);
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        horizontalLayout->addWidget(toolButton_2);
+        gridLayout->addItem(horizontalSpacer, 3, 0, 1, 1);
+
+        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Expanding, QSizePolicy::Minimum);
+
+        gridLayout->addItem(verticalSpacer, 4, 1, 1, 1);
 
         MainWindow->setCentralWidget(centralwidget);
+        menuBar = new QMenuBar(MainWindow);
+        menuBar->setObjectName("menuBar");
+        menuBar->setGeometry(QRect(0, 0, 995, 24));
+        menu = new QMenu(menuBar);
+        menu->setObjectName("menu");
+        MainWindow->setMenuBar(menuBar);
+
+        menuBar->addAction(menu->menuAction());
+        menu->addAction(action);
 
         retranslateUi(MainWindow);
 
@@ -78,8 +126,9 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
-        toolButton->setText(QCoreApplication::translate("MainWindow", "...", nullptr));
-        toolButton_2->setText(QCoreApplication::translate("MainWindow", "...", nullptr));
+        action->setText(QCoreApplication::translate("MainWindow", "\351\200\200\345\207\272\346\270\270\346\210\217", nullptr));
+        pushButton->setText(QCoreApplication::translate("MainWindow", "\345\274\200\345\247\213\346\270\270\346\210\217", nullptr));
+        menu->setTitle(QCoreApplication::translate("MainWindow", "\351\200\200\345\207\272\346\270\270\346\210\217", nullptr));
     } // retranslateUi
 
 };

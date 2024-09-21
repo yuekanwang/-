@@ -6,6 +6,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    connect(ui->action,&QAction::triggered,this,&MainWindow::close);
     this->setWindowTitle("中国象棋");
     this->setFixedSize(995,678);
 
