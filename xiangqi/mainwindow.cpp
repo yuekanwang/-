@@ -10,7 +10,6 @@ MainWindow::MainWindow(QWidget *parent)
     this->setWindowTitle("中国象棋");
     this->setFixedSize(995,678);
 
-
 }
 void MainWindow::paintEvent(QPaintEvent *)
 {
@@ -23,3 +22,11 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+void MainWindow::on_pushButton_clicked()
+{
+    this->hide();
+    Gamescene *gamescene =new Gamescene;
+    gamescene->show();
+}
+

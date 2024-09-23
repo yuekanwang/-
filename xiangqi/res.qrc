@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
         <file>mainscene/mainprint(fangyuan).jpg</file>
-        <file>mainscene/OIP-C.jpg</file>
     </qresource>
 </RCC>
