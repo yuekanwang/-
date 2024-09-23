@@ -23,7 +23,8 @@ public:
     {
         if (Gamescene->objectName().isEmpty())
             Gamescene->setObjectName("Gamescene");
-        Gamescene->resize(400, 300);
+        Gamescene->resize(995, 678);
+        Gamescene->setStyleSheet(QString::fromUtf8(""));
 
         retranslateUi(Gamescene);
 

@@ -16,6 +16,12 @@ public:
     ~Gamescene();
     void paintEvent(QPaintEvent *event);
 
+    int r;//棋子半径
+    int offset;//距离界面的边距
+    int d;//间距
+    int selectid;
+
+
 private:
     Ui::Gamescene *ui;
 };
