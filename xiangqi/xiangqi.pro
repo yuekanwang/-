@@ -15,6 +15,7 @@ SOURCES += \
 
 HEADERS += \
     Gamescene.h \
+    Stone.h \
     mainwindow.h
 
 FORMS += \
