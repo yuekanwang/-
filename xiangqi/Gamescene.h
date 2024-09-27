@@ -15,16 +15,19 @@ public:
     explicit Gamescene(QWidget *parent = nullptr);
     ~Gamescene();
     void paintEvent(QPaintEvent *event);
+
     //象棋的棋盘的坐标转换成界面坐标
     QPoint center(int row, int col);
     QPoint center(int id);
+
     //绘画单个具体的棋子
     void drawStone(QPainter&painter,int id);
 
     //界面坐标转换成棋盘的行列值[获取鼠标点击的像素坐标，是位于棋盘的哪一个行列值]
     bool getRowCol(QPoint pt, int& row, int& col);
+
     //鼠标点击事件
-    //void mousePressEvent(QMouseEvent *event);
+    virtual void mousePressEvent(QMouseEvent *event);
 
     //象棋移动的规则[将  士  象  马  车  炮  兵]
     bool canMove(int moveId, int killId, int row, int col);
@@ -36,7 +39,7 @@ public:
     bool canMovePAO(int moveId, int killId, int row, int col);
     bool canMoveBING(int moveId, int killId, int row, int col);
 
-    //Stone ston[32];
+    Stone stone[32];
     int r;//棋子半径
     int offset;//距离界面的边距
     int d;//间距

@@ -11,7 +11,8 @@ CONFIG += c++17
 SOURCES += \
     gamescene.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    stone.cpp
 
 HEADERS += \
     Gamescene.h \

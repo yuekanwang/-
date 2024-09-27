@@ -6,10 +6,10 @@ class Stone
 public:
     Stone();
     ~Stone();
-    QString getText();//根据enum TY得类型决定棋子上面的汉字
-    void initialize();//棋子初始化
+    QString getText(bool isRed);//根据enum TY的类型决定棋子上面的汉字
+    void initialize(int id);//棋子初始化
 
-    enum TY{将，士，象，马，车，炮，兵};
+    enum TY{JIANG, SHI, XIANG, MA, CHE, PAO, BING};
     int row;//棋子所在的行
     int col;//列
     int id;//棋子id

@@ -1,6 +1,7 @@
 #include "Gamescene.h"
 #include "ui_gamescene.h"
-#include <QMouseEvent>
+
+#include <QDebug>
 #include<QPainter>
 #include<QPen>
 #include <QColor>
@@ -12,6 +13,11 @@ Gamescene::Gamescene(QWidget *parent)
     this->setWindowTitle("中国象棋对战");
     this->setFixedSize(995,678);
 
+    for(int i=0;i<32;i++)
+    {
+        stone[i].initialize(i);//(initialize)初始化
+    }
+
 
 }
 
@@ -20,7 +26,7 @@ Gamescene::~Gamescene()
     delete ui;
 }
 
-void Gamescene::paintEvent(QPaintEvent *event)
+void Gamescene::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 
@@ -80,3 +86,9 @@ void Gamescene::paintEvent(QPaintEvent *event)
 
 
 }
+
+void Gamescene::mousePressEvent(QMouseEvent *)
+{
+    qDebug()<<"123";
+}
+
