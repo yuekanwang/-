@@ -81,6 +81,7 @@ QString Stone::getText(bool isRed)
         }
     }
     else{
+
         switch (ty) {
         case CHE:
             return "車";

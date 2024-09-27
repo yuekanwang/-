@@ -18,7 +18,6 @@ Gamescene::Gamescene(QWidget *parent)
         stone[i].initialize(i);//(initialize)初始化
     }
 
-
 }
 
 Gamescene::~Gamescene()
@@ -82,6 +81,38 @@ void Gamescene::paintEvent(QPaintEvent *)
     painter.drawText(rect2,"河",QTextOption(Qt::AlignHCenter));
     painter.drawText(rect3,"汉",QTextOption(Qt::AlignHCenter));
     painter.drawText(rect4,"界",QTextOption(Qt::AlignHCenter));
+
+}
+QPoint Gamescene::center(int row, int col)//象棋的棋盘的坐标转换成界面坐标
+{
+    QPoint p(col*d+offset+gz,row*d+offset+gz);
+    return p;
+}
+
+QPoint Gamescene::center(int id)
+{
+    QPoint p(stone[id].col*d+offset+gz,stone[id].row*d+offset+gz);
+    return p;
+}
+
+void Gamescene::drawStone(QPainter&painter,int id)
+{
+    if(stone[id].death)//判断棋子有无死
+        return ;
+
+
+    QPen pen=QPen(QBrush(Qt::SolidPattern),4);
+    painter.setPen(pen);//画笔变粗
+    painter.drawEllipse(center(id),d/2,d/2);//画棋子的圆形
+
+    if(selectid==id)//判断是否有选择棋子
+    {
+        painter.setBrush(QBrush(QColor(64,64,196, 80)));
+    }
+    else
+    {
+        painter.setBrush(QBrush(QColor(64,64,196, 10)));
+    }
 
 
 

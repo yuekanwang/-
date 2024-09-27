@@ -18,6 +18,7 @@ public:
 
     //象棋的棋盘的坐标转换成界面坐标
     QPoint center(int row, int col);
+    //寻找棋子的位置
     QPoint center(int id);
 
     //绘画单个具体的棋子
@@ -46,6 +47,7 @@ public:
     int selectid;//选中棋子0，否则1；
     int clicked;//所选棋子的id
     bool redtrue;//红旗先下标志
+    int gz=100;//棋盘向右移动100
 
 private:
     Ui::Gamescene *ui;
