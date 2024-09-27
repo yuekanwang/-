@@ -103,8 +103,7 @@ void Gamescene::drawStone(QPainter&painter,int id)
 
     QPen pen=QPen(QBrush(Qt::SolidPattern),4);
     painter.setPen(pen);//画笔变粗
-    painter.drawEllipse(center(id),d/2,d/2);//画棋子的圆形
-
+    painter.drawEllipse(center(id),r,r);//画棋子的圆形
     if(selectid==id)//判断是否有选择棋子
     {
         painter.setBrush(QBrush(QColor(64,64,196, 80)));
@@ -114,9 +113,32 @@ void Gamescene::drawStone(QPainter&painter,int id)
         painter.setBrush(QBrush(QColor(64,64,196, 10)));
     }
 
+    //画棋子颜色
+    if(id < 16)
+        painter.setPen(QColor(255, 0, 0));
+    else
+        painter.setPen(QColor(0, 0, 0));
 
+    painter.drawText(QRect(center(id),d,d), stone[id].getText(stone[id].death), QTextOption(Qt::AlignCenter));  //绘画圆形里面的汉字
 
 }
+
+bool Gamescene::getRowCol(QPoint pt, int &row, int &col)
+{
+    for(row = 0; row <= 9; row++)
+    {
+        for(col = 0; col <= 8; col++)
+        {
+            QPoint temp = center(row, col);
+            int x = temp.x()-pt.x();
+            int y = temp.y()-pt.y();
+
+            if(x*x+y*y < r*r)
+                return true;
+        }
+    }
+}
+
 
 void Gamescene::mousePressEvent(QMouseEvent *)
 {
