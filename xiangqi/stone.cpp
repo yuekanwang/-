@@ -20,22 +20,22 @@ Stone::~Stone()
 Pos pos[16]={
     {0,0,Stone::CHE},
     {0,1,Stone::MA},
-    {0,3,Stone::XIANG},
-    {0,4,Stone::SHI},
-    {0,5,Stone::JIANG},
-    {0,6,Stone::SHI},
-    {0,7,Stone::XIANG},
-    {0,8,Stone::MA},
-    {0,9,Stone::CHE},
+    {0,2,Stone::XIANG},
+    {0,3,Stone::SHI},
+    {0,4,Stone::JIANG},
+    {0,5,Stone::SHI},
+    {0,6,Stone::XIANG},
+    {0,7,Stone::MA},
+    {0,8,Stone::CHE},
 
-    {3,2,Stone::PAO},
-    {3,8,Stone::PAO},
+    {2,2,Stone::PAO},
+    {2,6,Stone::PAO},
 
-    {4,0,Stone::BING},
-    {4,0,Stone::BING},
-    {4,0,Stone::BING},
-    {4,0,Stone::BING},
-    {4,0,Stone::BING},
+    {3,0,Stone::BING},
+    {3,2,Stone::BING},
+    {3,4,Stone::BING},
+    {3,6,Stone::BING},
+    {3,8,Stone::BING},
 };
 
 void Stone::initialize(int id)//根据棋子的id，给每个棋子赋予他的初始状态
@@ -50,9 +50,9 @@ void Stone::initialize(int id)//根据棋子的id，给每个棋子赋予他的�
     else
     {
         row=9-pos[id-16]._row;
-        col=9-pos[id-16]._col;
-        ty=pos[id]._ty;
-        red=true;
+        col=8-pos[id-16]._col;
+        ty=pos[id-16]._ty;
+        red=false;
     }
     death=false;
 }
@@ -63,15 +63,15 @@ QString Stone::getText(bool isRed)
     if(isRed){
         switch (ty) {
         case CHE:
-            return "俥";
+            return "車";
         case MA:
-            return "傌";
+            return "马";
         case PAO:
             return "炮";
         case BING:
             return "兵";
         case JIANG:
-            return "帥";
+            return "帅";
         case SHI:
             return "仕";
         case XIANG:

@@ -1,10 +1,10 @@
 #include "Gamescene.h"
 #include "ui_gamescene.h"
-
 #include <QDebug>
 #include<QPainter>
 #include<QPen>
 #include <QColor>
+
 Gamescene::Gamescene(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::Gamescene)
@@ -17,13 +17,16 @@ Gamescene::Gamescene(QWidget *parent)
     {
         stone[i].initialize(i);//(initialize)初始化
     }
-
 }
+
+
 
 Gamescene::~Gamescene()
 {
     delete ui;
 }
+
+
 
 void Gamescene::paintEvent(QPaintEvent *)
 {
@@ -82,28 +85,38 @@ void Gamescene::paintEvent(QPaintEvent *)
     painter.drawText(rect3,"汉",QTextOption(Qt::AlignHCenter));
     painter.drawText(rect4,"界",QTextOption(Qt::AlignHCenter));
 
+    for(int i=0;i<32;i++)
+    {
+         drawStone(painter,i);
+    }
 }
+
+
+
 QPoint Gamescene::center(int row, int col)//象棋的棋盘的坐标转换成界面坐标
 {
-    QPoint p(col*d+offset+gz,row*d+offset+gz);
+    QPoint p(col*d+offset+gz,row*d+offset);
     return p;
 }
 
+
+
 QPoint Gamescene::center(int id)
 {
-    QPoint p(stone[id].col*d+offset+gz,stone[id].row*d+offset+gz);
+    QPoint p(stone[id].col*d+offset+gz,stone[id].row*d+offset);
     return p;
 }
+
+
 
 void Gamescene::drawStone(QPainter&painter,int id)
 {
     if(stone[id].death)//判断棋子有无死
         return ;
-
-
-    QPen pen=QPen(QBrush(Qt::SolidPattern),4);
-    painter.setPen(pen);//画笔变粗
+    painter.setBrush(QBrush(QColor(255, 183, 58)));
+    painter.setPen(QPen(Qt::black,4,Qt::SolidLine));
     painter.drawEllipse(center(id),r,r);//画棋子的圆形
+
     if(selectid==id)//判断是否有选择棋子
     {
         painter.setBrush(QBrush(QColor(64,64,196, 80)));
@@ -115,13 +128,20 @@ void Gamescene::drawStone(QPainter&painter,int id)
 
     //画棋子颜色
     if(id < 16)
-        painter.setPen(QColor(255, 0, 0));
+        painter.setPen(QPen(Qt::red,4,Qt::SolidLine));
     else
-        painter.setPen(QColor(0, 0, 0));
+        painter.setPen(QPen(Qt::black,4,Qt::SolidLine));
 
-    painter.drawText(QRect(center(id),d,d), stone[id].getText(stone[id].death), QTextOption(Qt::AlignCenter));  //绘画圆形里面的汉字
+    QRect rect(center(id).x()-r,center(id).y()-r,d,d);
+
+    //设一个方，将其置于棋子的圆内，然后写字
+    painter.setFont(QFont("楷体",r*1.3,2000));
+    painter.drawText(rect,stone[id].getText(stone[id].red), QTextOption(Qt::AlignCenter));
+    //绘画圆形里面的汉字
 
 }
+
+
 
 bool Gamescene::getRowCol(QPoint pt, int &row, int &col)
 {
@@ -138,6 +158,7 @@ bool Gamescene::getRowCol(QPoint pt, int &row, int &col)
         }
     }
 }
+
 
 
 void Gamescene::mousePressEvent(QMouseEvent *)
