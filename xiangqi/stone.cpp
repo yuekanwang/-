@@ -28,8 +28,8 @@ Pos pos[16]={
     {0,7,Stone::MA},
     {0,8,Stone::CHE},
 
-    {2,2,Stone::PAO},
-    {2,6,Stone::PAO},
+    {2,1,Stone::PAO},
+    {2,7,Stone::PAO},
 
     {3,0,Stone::BING},
     {3,2,Stone::BING},
@@ -63,7 +63,7 @@ QString Stone::getText(bool isRed)
     if(isRed){
         switch (ty) {
         case CHE:
-            return "車";
+            return "车";
         case MA:
             return "马";
         case PAO:
@@ -73,9 +73,9 @@ QString Stone::getText(bool isRed)
         case JIANG:
             return "帅";
         case SHI:
-            return "仕";
+            return "士";
         case XIANG:
-            return "相";
+            return "象";
         default:
             return "null";
         }
@@ -94,9 +94,9 @@ QString Stone::getText(bool isRed)
         case JIANG:
             return "將";
         case SHI:
-            return "士";
+            return "仕";
         case XIANG:
-            return "象";
+            return "相";
         default:
             return "null";
         }

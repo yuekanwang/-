@@ -4,6 +4,7 @@
 #include<QPainter>
 #include<QPen>
 #include <QColor>
+#include <algorithm>
 
 Gamescene::Gamescene(QWidget *parent)
     : QWidget(parent)
@@ -17,15 +18,53 @@ Gamescene::Gamescene(QWidget *parent)
     {
         stone[i].initialize(i);//(initialize)初始化
     }
+
+    selectid=-1;
+    redtrue=true;
 }
-
-
 
 Gamescene::~Gamescene()
 {
     delete ui;
 }
 
+int Gamescene::getStoneId(int row,int col)
+{
+    for(int i=0;i<32;i++)
+    {
+        if(row==stone[i].row&&col==stone[i].col)
+            return i;
+    }
+    return -1;
+}
+
+bool Gamescene::isdead(int id)
+{
+    if(id==-1)return true;
+    else
+        return stone[id].death;
+}
+
+int Gamescene::getStoneCountAtLine(int row1,int col1,int row2,int col2)
+{
+    int ret=0;//记录直线上的棋子数量(不包括终点和起点）
+
+    //若是两个点一致或是两个点不在同一直线上，则返回-1结束
+    if((row1==row2&&col1==col2)||(row1!=row2&&col1!=col2))
+        return -1;
+
+    if(row1==row2)
+    {
+        for(int col=std::min(col1,col2)+1;col<std::max(col1,col2);col++)
+            if(getStoneId(row1,col)!=-1)ret++;
+    }
+    else if(col1==col2)
+    {
+        for(int row=std::min(row1,row2)+1;row<std::max(row1,row2);row++)
+            if(getStoneId(row,col1)!=-1)ret++;
+    }
+    return ret;
+}
 
 
 void Gamescene::paintEvent(QPaintEvent *)
@@ -77,17 +116,23 @@ void Gamescene::paintEvent(QPaintEvent *)
     //**"楚河汉界"**先设方形，然后在方形里面写字
     QRect rect1(offset+d+gz,offset+4*d+10,d,d);
     QRect rect2(offset+2*d+gz,offset+4*d+10,d,d);
-    QRect rect3(offset+5*d+gz,offset+4*d+10,d,d);
-    QRect rect4(offset+6*d+gz,offset+4*d+10,d,d);
+
+    QRect rect3(-(offset+6*d+gz),-(offset+5*d)+10,d,d);
+    QRect rect4(-(offset+7*d+gz),-(offset+5*d)+10,d,d);
+
     painter.setFont(QFont("隶书",r,800));
     painter.drawText(rect1,"楚",QTextOption(Qt::AlignHCenter));
     painter.drawText(rect2,"河",QTextOption(Qt::AlignHCenter));
+    painter.save();
+    painter.translate(0,0);
+    painter.rotate(180);
     painter.drawText(rect3,"汉",QTextOption(Qt::AlignHCenter));
     painter.drawText(rect4,"界",QTextOption(Qt::AlignHCenter));
+    painter.restore();
 
     for(int i=0;i<32;i++)
     {
-         drawStone(painter,i);
+        drawStone(painter,i);
     }
 }
 
