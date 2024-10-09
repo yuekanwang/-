@@ -206,8 +206,51 @@ bool Gamescene::getRowCol(QPoint pt, int &row, int &col)
 
 
 
-void Gamescene::mousePressEvent(QMouseEvent *)
+void Gamescene::mousePressEvent(QMouseEvent *event)
 {
-    qDebug()<<"123";
+QPoint pt = event->pos();
+int row, col;
+if(getRowCol(pt, row, col))
+{
+    int clickedId = getStoneId(row, col);
+    if(selectid == -1) // 没有选择棋子
+    {
+        if(clickedId != -1 && stone[clickedId].red == redtrue) // 选择自己的棋子
+        {
+            selectid = clickedId;
+            qDebug() << "Selected stone id:" << selectid;
+        }
+    }
+    else // 已经选择了一个棋子
+    {
+        if(clickedId != -1 && stone[clickedId].red == redtrue) // 选择自己的棋子
+        {
+            selectid = clickedId;
+            qDebug() << selectid;
+        }
+        else // 移动棋子或吃子
+        {
+            if(clickedId == -1 || stone[clickedId].red != redtrue) // 空位置或对方棋子
+            {
+                // 移动棋子逻辑
+                stone[selectid].row = row;
+                stone[selectid].col = col;
+                if(clickedId != -1) // 吃子逻辑
+                {
+                    stone[clickedId].death = true;
+                    qDebug() << clickedId;
+                }
+                selectid = -1; // 取消选择
+                redtrue = !redtrue; // 轮到对方
+                update(); // 刷新界面
+            }
+        }
+    }
+}
+else
+{
+    selectid = -1; // 点击空白区域，取消选择
+    qDebug() << "没选中";
+}
 }
 
