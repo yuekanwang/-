@@ -6,21 +6,21 @@
 #include <QColor>
 #include <algorithm>
 
-Gamescene::Gamescene(QWidget *parent)
+Gamescene::Gamescene(QWidget *parent)//构造函数（初始化游戏）
     : QWidget(parent)
     , ui(new Ui::Gamescene)
 {
     ui->setupUi(this);
-    this->setWindowTitle("中国象棋对战");
-    this->setFixedSize(995,678);
+    this->setWindowTitle("中国象棋对战");//窗口名字设置为“中国象棋对战”
+    this->setFixedSize(995,678);//固定好窗口的分辨率大小
 
     for(int i=0;i<32;i++)
     {
-        stone[i].initialize(i);//(initialize)初始化
+        stone[i].initialize(i);//(initialize)初始化棋子
     }
 
-    selectid=-1;
-    redtrue=true;
+    selectid=-1;//初始化（未选择）
+    redtrue=true;//初始化（红方先行）
 }
 
 Gamescene::~Gamescene()
