@@ -46,7 +46,7 @@ public:
     int d;//间距
     int selectid;//选中棋子则大于0，否则为-1;
     //因为棋子有32个，要记录选中的棋子0-31,所以不能用bool类型
-    int clicked;//所选棋子的id
+    int clicked;//用鼠标选中棋子的id
     bool redtrue;//红旗先下标志
     int gz=100;//棋盘向右移动100
 
