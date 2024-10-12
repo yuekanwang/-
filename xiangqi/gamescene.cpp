@@ -208,122 +208,189 @@ bool Gamescene::getRowCol(QPoint pt, int &row, int &col)
 }
 
 
-
-void Gamescene::mousePressEvent(QMouseEvent *event)
+//鼠标点击事件
+void Gamescene::mousePressEvent(QMouseEvent *ev)
 {
-    QPoint pt = event->pos();
+    QPoint pt = ev->pos();
     //将pt转化成棋盘的像行列值
     //判断这个行列值上面有没有棋子
-
     int row, col;
-    if(getRowCol(pt, row, col))
-    {
-        int clickedId = getStoneId(row, col);
-        if(selectid == -1) // 没有选择棋子
-        {
-            if(clickedId != -1 && stone[clickedId].red == redtrue) // 选择自己的棋子
-            {
-                selectid = clickedId;
-                qDebug() << "Selected stone id:" << selectid;
-            }
-        }
-        else // 已经选择了一个棋子
-        {
-            if(clickedId != -1 && stone[clickedId].red == redtrue) // 选择自己的棋子
-            {
-                selectid = clickedId;
-                qDebug() << selectid;
-            }
-            else // 移动棋子或吃子
-            {
-                if(clickedId == -1 || stone[clickedId].red != redtrue) // 空位置或对方棋子
-                {
-                    //if(canMove(selectid,clickedId,row,col))
-                    if(1)//暂时先用if（1）代替着。因为canMove函数没写完
-                    {
-                        // 移动棋子逻辑
-                        stone[selectid].row = row;
-                        stone[selectid].col = col;
-                        if(clickedId != -1) // 吃子逻辑
-                        {
-                            stone[clickedId].death = true;
-                            qDebug() << clickedId;
-                        }
-                        selectid = -1; // 取消选择
-                        redtrue = !redtrue; // 轮到对方
-                        update(); // 刷新界面
 
-                    }
-                }
-            }
+    //点击棋盘外面就不做处理
+    if(!getRowCol(pt, row, col))
+        return;
+
+    clicked = -1;
+    int i;
+
+    //判断是哪一个棋子被选中，根据ID（这里的局部i）来记录下来
+    for(i = 0; i <= 31; i++)
+    {
+        if(stone[i].row == row && stone[i].col == col && stone[i].death == false)
+            break;
+    }
+
+    if(i < 32)
+        clicked = i;  //选中的棋子的ID
+
+    if(selectid == -1)//选中棋子
+    {
+        if(clicked != -1)
+        {
+            if(redtrue == stone[clicked].red)
+                selectid = clicked;
         }
     }
-    else
+    else if(selectid!=-1&&clicked!=-1&&stone[selectid].red==stone[clicked].red)//想换个棋子选
     {
-        selectid = -1; // 点击空白区域，取消选择
-        qDebug() << "没选中";
+        selectid = clicked;
     }
+    else//走棋子
+    {
+        if(canMove(selectid,clicked, row, col ))
+        {
+            // 移动棋子的逻辑
+            stone[selectid].row = row;
+            stone[selectid].col = col;
+            if(clicked != -1)// 取消选择
+                stone[clicked].death = true;
+
+            selectid = -1;
+            redtrue = !redtrue;// 轮到对方
+
+        }
+
+    }
+    update();// 刷新界面
+
 }
 
+
+
 //总的移动规则，选中准备下的棋子，被杀的棋子， 准备移动到的目的行列值
-// bool Gamescene::canMove(int moveId, int killId, int row, int col)//棋子走法
-// {
-//     //1.确定是选择其它棋子还是走棋
-//     //2.是否需要使用到canMoveXXX()来做限制
-//     //3.罗列出所有情况，和需要的得到的结果值 ==>  然后进行中间的逻辑层判断
+bool Gamescene::canMove(int moveId, int killId, int row, int col)//棋子走法
+{
+    //1.确定是选择其它棋子还是走棋
+    //2.是否需要使用到canMoveXXX()来做限制
+    //3.罗列出所有情况，和需要的得到的结果值 ==>  然后进行中间的逻辑层判断
 
-//     switch(stone[moveId].ty)//根据选中的棋子，来选择对应的走法
-//     {
-//     case Stone::JIANG:
-//         return canMoveJIANG(moveId, killId, row, col);
-//     case Stone::SHI:
-//         return canMoveSHI(moveId, killId, row, col);
-//     case Stone::XIANG:
-//         return canMoveXIANG(moveId, killId, row, col);
-//     case Stone::MA:
-//         return canMoveMA(moveId, killId, row, col);
-//     case Stone::CHE:
-//         return canMoveCHE(moveId, killId, row, col);
-//     case Stone::PAO:
-//         return canMovePAO(moveId, killId, row, col);
-//     case Stone::BING:
-//         return canMoveBING(moveId, killId, row, col);
+    //tm这段注释别删，后面可能要用到
+    // if(stone[moveId].red==stone[killId].red)
+    // {
+    //     if(killId==-1)
+    //     {
+    //         switch(stone[moveId].ty)//根据选中的棋子，来选择对应的走法
+    //         {
+    //         case Stone::JIANG:
+    //             return canMoveJIANG(moveId, killId, row, col);
+    //         case Stone::SHI:
+    //             return canMoveSHI(moveId, killId, row, col);
+    //         case Stone::XIANG:
+    //             return canMoveXIANG(moveId, killId, row, col);
+    //             // case Stone::MA:
+    //             //     return canMoveMA(moveId, killId, row, col);
+    //             // case Stone::CHE:
+    //             //     return canMoveCHE(moveId, killId, row, col);
+    //             // case Stone::PAO:
+    //             //     return canMovePAO(moveId, killId, row, col);
+    //             // case Stone::BING:
+    //             //     return canMoveBING(moveId, killId, row, col);
 
-//     }
-//     return true;
-// }
+    //         }
+    //     }
+    //     selectid=killId;
+    //     update();
+    //     return false;
+    // }
 
-// bool Gamescene::canMoveJIANG(int moveId, int killId, int row, int col)
-// {
-//     //将军不能超出营地
-//     if(stone[moveId].red)//红方
-//     {
+    // else
+    // {
+        switch(stone[moveId].ty)//根据选中的棋子，来选择对应的走法
+        {
+        case Stone::JIANG:
+            return canMoveJIANG(moveId, killId, row, col);
+        case Stone::SHI:
+            return canMoveSHI(moveId, killId, row, col);
+        case Stone::XIANG:
+            return canMoveXIANG(moveId, killId, row, col);
+            // case Stone::MA:
+            //     return canMoveMA(moveId, killId, row, col);
+            // case Stone::CHE:
+            //     return canMoveCHE(moveId, killId, row, col);
+            // case Stone::PAO:
+            //     return canMovePAO(moveId, killId, row, col);
+            // case Stone::BING:
+            //     return canMoveBING(moveId, killId, row, col);
 
-//         if(row > 2 || col < 3 )
-//             return false;
-//         if(col>5)
-//             return false;
-//     }
-//     else//黑方
-//     {
-//         if(row<7||col<3)
-//             return false;
-//         if(col>5)
-//             return false;
-//     }
+        }
+        return true;
+    // }
+}
 
-//     //计算将军行与列分别走的步数，并加起来只能等于一
-//     int dr=abs(stone[moveId].row-row);
-//     int dc=abs(stone[moveId].col-col);
+bool Gamescene::canMoveJIANG(int moveId, int killId, int row, int col)
+{
+    //将军不能超出营地
+    if(stone[moveId].red)//红方
+    {
 
-//     if(dr+dc==1)
-//         return true;
+        if(row > 2 || col < 3 )
+            return false;
+        if(col>5)
+            return false;
+    }
+    else//黑方
+    {
+        if(row<7||col<3)
+            return false;
+        if(col>5)
+            return false;
+    }
 
-//     return false;
+    //计算将军行与列分别走的步数，并加起来只能等于一
+    int dr=abs(stone[moveId].row-row);
+    int dc=abs(stone[moveId].col-col);
 
-// }
-// bool Gamescene::canMoveSHI(int moveId, int killId, int row, int col);
-// bool Gamescene::canMoveXIANG(int moveId, int killId, int row, int col);
+    int d=dr*10+dc;
+    //为何要dr*10呢？假设填了(dr==1||dc==1),那么当dr=2，dc=1的时候，也能走
+    //所以要让他们相加为d，行走了一步，算10；列走了一步，算1.
+    if(d==1||d==10)
+        return true;
+
+    return false;
+
+}
+bool Gamescene::canMoveSHI(int moveId, int killId, int row, int col)
+{
+    //对于士行走范围的限制
+    if(stone[moveId].red)//红方
+    {
+
+        if(row > 2 || col < 3 )
+            return false;
+        if(col>5)
+            return false;
+    }
+    else//黑方
+    {
+        if(row<7||col<3)
+            return false;
+        if(col>5)
+            return false;
+    }
+    int dr=abs(stone[moveId].row-row);//行走的步数
+
+    int dc=abs(stone[moveId].col-col);//列走的步数
+    int d=dr*10+dc;
+    if(d==11)//用将的走法原理类似
+        return true;
+
+    return false;
+
+}
+ bool Gamescene::canMoveXIANG(int moveId, int killId, int row, int col)
+{
+     return 1;
+}
 // bool Gamescene::canMoveMA(int moveId, int killId, int row, int col);
 // bool Gamescene::canMoveCHE(int moveId, int killId, int row, int col);
 // bool Gamescene::canMovePAO(int moveId, int killId, int row, int col);
