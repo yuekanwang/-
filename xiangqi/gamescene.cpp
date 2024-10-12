@@ -22,6 +22,7 @@ Gamescene::Gamescene(QWidget *parent)//构造函数（初始化游戏）
 
     selectid=-1;//初始化（未选择）
     redtrue=true;//初始化（红方先行）
+
 }
 
 Gamescene::~Gamescene()
@@ -134,6 +135,22 @@ void Gamescene::paintEvent(QPaintEvent *)
     for(int i=0;i<32;i++)
     {
         drawStone(painter,i);
+    }
+
+
+    if(redtrue)
+    {
+        ui->pushButton->setText("红方回合");
+        // QPalette palette;
+        // palette.setColor(QPalette::ButtonText,Qt::red);
+        // ui->pushButton->setPalette(palette);
+        ui->pushButton->setStyleSheet("color:red;font: 30pt 华文行楷;background-color:#ffbb46;border-radius:40px;border-style: solid; border-width: 2px; border-radius: 10px; border-color: red;");
+
+    }
+    else
+    {
+        ui->pushButton->setText("黑方回合");
+        ui->pushButton->setStyleSheet("color:black;font: 30pt 华文行楷;background-color:#ffbb46;border-radius:40px;border-style: solid; border-width: 2px; border-radius: 10px; border-color: black;");
     }
 }
 
@@ -389,7 +406,33 @@ bool Gamescene::canMoveSHI(int moveId, int killId, int row, int col)
 }
  bool Gamescene::canMoveXIANG(int moveId, int killId, int row, int col)
 {
-     return 1;
+    if(stone[moveId].red)
+    {
+        if(row>4)
+            return false;
+    }
+    else
+    {
+        if(row<5)
+            return false;
+    }
+
+    int dr=abs(stone[moveId].row-row);//行走的步数
+    int dc=abs(stone[moveId].col-col);//列走的步数
+
+    if(dr==2&&dc==2)
+    {
+        //计算象脚的位置
+        int kr=(stone[moveId].row+row)/2;
+        int kc=(stone[moveId].col+col)/2;
+
+        if(getStoneId(kr,kc)!=-1)//如果象脚有棋子，那么不允许移动
+            return false;
+
+        return true;
+    }
+
+    return false;
 }
 // bool Gamescene::canMoveMA(int moveId, int killId, int row, int col);
 // bool Gamescene::canMoveCHE(int moveId, int killId, int row, int col);

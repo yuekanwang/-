@@ -11,6 +11,7 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QPushButton>
 #include <QtWidgets/QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -18,13 +19,18 @@ QT_BEGIN_NAMESPACE
 class Ui_Gamescene
 {
 public:
+    QPushButton *pushButton;
 
     void setupUi(QWidget *Gamescene)
     {
         if (Gamescene->objectName().isEmpty())
             Gamescene->setObjectName("Gamescene");
-        Gamescene->resize(995, 678);
+        Gamescene->resize(1265, 712);
         Gamescene->setStyleSheet(QString::fromUtf8(""));
+        pushButton = new QPushButton(Gamescene);
+        pushButton->setObjectName("pushButton");
+        pushButton->setGeometry(QRect(730, 50, 161, 81));
+        pushButton->setStyleSheet(QString::fromUtf8(""));
 
         retranslateUi(Gamescene);
 
@@ -34,6 +40,7 @@ public:
     void retranslateUi(QWidget *Gamescene)
     {
         Gamescene->setWindowTitle(QCoreApplication::translate("Gamescene", "Form", nullptr));
+        pushButton->setText(QString());
     } // retranslateUi
 
 };
