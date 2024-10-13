@@ -137,13 +137,10 @@ void Gamescene::paintEvent(QPaintEvent *)
         drawStone(painter,i);
     }
 
-
+    //画提示回合的框。这个框本质是按钮，只是点了没用
     if(redtrue)
     {
         ui->pushButton->setText("红方回合");
-        // QPalette palette;
-        // palette.setColor(QPalette::ButtonText,Qt::red);
-        // ui->pushButton->setPalette(palette);
         ui->pushButton->setStyleSheet("color:red;font: 30pt 华文行楷;background-color:#ffbb46;border-radius:40px;border-style: solid; border-width: 2px; border-radius: 10px; border-color: red;");
 
     }
@@ -254,7 +251,7 @@ void Gamescene::mousePressEvent(QMouseEvent *ev)
     {
         if(clicked != -1)
         {
-            if(redtrue == stone[clicked].red)
+            if(redtrue == stone[clicked].red)//如果所点击的棋子是自己方，则选中
                 selectid = clicked;
         }
     }
@@ -330,8 +327,8 @@ bool Gamescene::canMove(int moveId, int killId, int row, int col)//棋子走法
             return canMoveSHI(moveId, killId, row, col);
         case Stone::XIANG:
             return canMoveXIANG(moveId, killId, row, col);
-            // case Stone::MA:
-            //     return canMoveMA(moveId, killId, row, col);
+         case Stone::MA:
+             return canMoveMA(moveId, killId, row, col);
             // case Stone::CHE:
             //     return canMoveCHE(moveId, killId, row, col);
             // case Stone::PAO:
@@ -343,6 +340,8 @@ bool Gamescene::canMove(int moveId, int killId, int row, int col)//棋子走法
         return true;
     // }
 }
+
+
 
 bool Gamescene::canMoveJIANG(int moveId, int killId, int row, int col)
 {
@@ -376,6 +375,9 @@ bool Gamescene::canMoveJIANG(int moveId, int killId, int row, int col)
     return false;
 
 }
+
+
+
 bool Gamescene::canMoveSHI(int moveId, int killId, int row, int col)
 {
     //对于士行走范围的限制
@@ -402,8 +404,10 @@ bool Gamescene::canMoveSHI(int moveId, int killId, int row, int col)
         return true;
 
     return false;
-
 }
+
+
+
  bool Gamescene::canMoveXIANG(int moveId, int killId, int row, int col)
 {
     if(stone[moveId].red)
@@ -434,7 +438,36 @@ bool Gamescene::canMoveSHI(int moveId, int killId, int row, int col)
 
     return false;
 }
-// bool Gamescene::canMoveMA(int moveId, int killId, int row, int col);
+
+
+
+ bool Gamescene::canMoveMA(int moveId, int killId, int row, int col)
+{
+    int dr=abs(stone[moveId].row-row);//行走的步数
+    int dc=abs(stone[moveId].col-col);//列走的步数
+
+    if((dr==1&&dc==2)||(dr==2&&dc==1))
+    {
+        //计算马脚的位置
+        int kr,kc;
+        if(dr==1&&dc==2)//马横着跳
+        {
+            kr=stone[moveId].row;
+            kc=(stone[moveId].col+col)/2;
+        }
+        else//马竖着跳
+        {
+            kr=(stone[moveId].row+row)/2;
+            kc=stone[moveId].col;
+        }
+
+        if(getStoneId(kr,kc)!=-1)//如果马脚有棋子，那么不允许移动
+            return false;
+
+        return true;
+    }
+    return false;
+}
 // bool Gamescene::canMoveCHE(int moveId, int killId, int row, int col);
 // bool Gamescene::canMovePAO(int moveId, int killId, int row, int col);
 // bool Gamescene::canMoveBING(int moveId, int killId, int row, int col);
