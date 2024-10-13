@@ -75,6 +75,7 @@ public:
         sizePolicy1.setHeightForWidth(pushButton->sizePolicy().hasHeightForWidth());
         pushButton->setSizePolicy(sizePolicy1);
         pushButton->setMinimumSize(QSize(250, 80));
+        pushButton->setCursor(QCursor(Qt::PointingHandCursor));
         pushButton->setStyleSheet(QString::fromUtf8("QPushButton\n"
 "{\n"
 "	color:black;\n"

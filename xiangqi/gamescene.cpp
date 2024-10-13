@@ -73,7 +73,7 @@ void Gamescene::paintEvent(QPaintEvent *)
 {
     QPainter painter(this);
 
-    QPixmap pixmap(":/mainscene/Gamesceneprint.jpg");
+    QPixmap pixmap(":/mainscene/GameSceneprint2.png");
     painter.drawPixmap(this->rect(),pixmap);//贴上深沉的背景
 
     QPen pen=QPen(QBrush(Qt::SolidPattern),4);
@@ -469,6 +469,8 @@ bool Gamescene::canMoveSHI(int moveId, int killId, int row, int col)
     return false;
 }
 
+
+
 bool Gamescene::canMoveBING(int moveId, int killId, int row, int col)
 {
     int r = stone[moveId].row;
@@ -510,6 +512,9 @@ bool Gamescene::canMoveBING(int moveId, int killId, int row, int col)
 
     return false;
 }
+
+
+
 bool Gamescene::canMoveCHE(int moveId, int killId, int row, int col)
 {
     int r = stone[moveId].row;
@@ -526,6 +531,9 @@ bool Gamescene::canMoveCHE(int moveId, int killId, int row, int col)
 
     return true;
 }
+
+
+
 bool Gamescene::canMovePAO(int moveId, int killId, int row, int col)
 {
     int r = stone[moveId].row;

@@ -743,6 +743,9 @@ release\gamescene.obj: ..\..\gamescene.cpp ..\..\Gamescene.h \
 		D:\Qt\6.5.3\msvc2019_64\include\QtGui\qinputmethod.h \
 		D:\Qt\6.5.3\msvc2019_64\include\QtCore\qlocale.h \
 		D:\Qt\6.5.3\msvc2019_64\include\QtGui\qguiapplication_platform.h \
+		D:\Qt\6.5.3\msvc2019_64\include\QtWidgets\QPushButton \
+		D:\Qt\6.5.3\msvc2019_64\include\QtWidgets\qpushbutton.h \
+		D:\Qt\6.5.3\msvc2019_64\include\QtWidgets\qabstractbutton.h \
 		D:\Qt\6.5.3\msvc2019_64\include\QtCore\QDebug \
 		D:\Qt\6.5.3\msvc2019_64\include\QtGui\QPainter \
 		D:\Qt\6.5.3\msvc2019_64\include\QtGui\qpainter.h \
