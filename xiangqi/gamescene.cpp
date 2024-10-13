@@ -34,7 +34,7 @@ int Gamescene::getStoneId(int row,int col)
 {
     for(int i=0;i<32;i++)
     {
-        if(row==stone[i].row&&col==stone[i].col)
+        if(row==stone[i].row&&col==stone[i].col&&stone[i].death==false)
             return i;
     }
     return -1;
@@ -47,26 +47,6 @@ bool Gamescene::isdead(int id)
         return stone[id].death;
 }
 
-int Gamescene::getStoneCountAtLine(int row1,int col1,int row2,int col2)
-{
-    int ret=0;//记录直线上的棋子数量(不包括终点和起点）
-
-    //若是两个点一致或是两个点不在同一直线上，则返回-1结束
-    if((row1==row2&&col1==col2)||(row1!=row2&&col1!=col2))
-        return -1;
-
-    if(row1==row2)
-    {
-        for(int col=std::min(col1,col2)+1;col<std::max(col1,col2);col++)
-            if(getStoneId(row1,col)!=-1)ret++;
-    }
-    else if(col1==col2)
-    {
-        for(int row=std::min(row1,row2)+1;row<std::max(row1,row2);row++)
-            if(getStoneId(row,col1)!=-1)ret++;
-    }
-    return ret;
-}
 
 
 void Gamescene::paintEvent(QPaintEvent *)
@@ -174,18 +154,19 @@ void Gamescene::drawStone(QPainter&painter,int id)
     if(stone[id].death)//判断棋子有无死
         return ;
 
-    painter.setBrush(QBrush(QColor(255, 183, 58)));
     painter.setPen(QPen(Qt::black,4,Qt::SolidLine));
-    painter.drawEllipse(center(id),r,r);//画棋子的圆形
 
     if(selectid==id)//判断是否有选择棋子
     {
-        painter.setBrush(QBrush(QColor(64,64,196, 80)));
+        painter.setBrush(QBrush(QColor(160, 121, 9)));
+        //rgb(1, 202, 209)//蓝色
+        //rgb(160, 121, 9)//黑黄色
     }
     else
     {
-        painter.setBrush(QBrush(QColor(64,64,196, 10)));
+        painter.setBrush(QBrush(QColor(255, 183, 58)));
     }
+    painter.drawEllipse(center(id),r,r);//画棋子的圆形
 
     //画棋子颜色
     if(id < 16)
@@ -245,7 +226,10 @@ void Gamescene::mousePressEvent(QMouseEvent *ev)
     }
 
     if(i < 32)
-        clicked = i;  //选中的棋子的ID
+    {
+        clicked = i;//选中的棋子的ID
+        //qDebug()<<stone[i].row<<' '<<stone[i].col;
+    }
 
     if(selectid == -1)//选中棋子
     {
@@ -259,6 +243,7 @@ void Gamescene::mousePressEvent(QMouseEvent *ev)
     {
         selectid = clicked;
     }
+
     else//走棋子
     {
         if(canMove(selectid,clicked, row, col ))
@@ -289,36 +274,36 @@ bool Gamescene::canMove(int moveId, int killId, int row, int col)//棋子走法
     //3.罗列出所有情况，和需要的得到的结果值 ==>  然后进行中间的逻辑层判断
 
     //tm这段注释别删，后面可能要用到
-    if(stone[moveId].red==stone[killId].red)
-    {
-        if(killId==-1)
-        {
-            switch(stone[moveId].ty)//根据选中的棋子，来选择对应的走法
-            {
-            case Stone::JIANG:
-                return canMoveJIANG(moveId, killId, row, col);
-            case Stone::SHI:
-                return canMoveSHI(moveId, killId, row, col);
-            case Stone::XIANG:
-                return canMoveXIANG(moveId, killId, row, col);
-            case Stone::MA:
-                return canMoveMA(moveId, killId, row, col);
-            case Stone::CHE:
-                return canMoveCHE(moveId, killId, row, col);
-            case Stone::PAO:
-                return canMovePAO(moveId, killId, row, col);
-            case Stone::BING:
-                return canMoveBING(moveId, killId, row, col);
+    // if(stone[moveId].red==stone[killId].red)
+    // {
+    //     if(killId==-1)
+    //     {
+    //         switch(stone[moveId].ty)//根据选中的棋子，来选择对应的走法
+    //         {
+    //         case Stone::JIANG:
+    //             return canMoveJIANG(moveId, killId, row, col);
+    //         case Stone::SHI:
+    //             return canMoveSHI(moveId, killId, row, col);
+    //         case Stone::XIANG:
+    //             return canMoveXIANG(moveId, killId, row, col);
+    //         case Stone::MA:
+    //             return canMoveMA(moveId, killId, row, col);
+    //         case Stone::CHE:
+    //             return canMoveCHE(moveId, killId, row, col);
+    //         case Stone::PAO:
+    //             return canMovePAO(moveId, killId, row, col);
+    //         case Stone::BING:
+    //             return canMoveBING(moveId, killId, row, col);
 
-            }
-        }
-        selectid=killId;
-        update();
-        return false;
-    }
+    //         }
+    //     }
+    //     selectid=killId;
+    //     update();
+    //     return false;
+    // }
 
-    else
-    {
+    // else
+    // {
         switch(stone[moveId].ty)//根据选中的棋子，来选择对应的走法
         {
         case Stone::JIANG:
@@ -338,7 +323,7 @@ bool Gamescene::canMove(int moveId, int killId, int row, int col)//棋子走法
 
         }
         return true;
-    }
+   // }
 }
 
 
@@ -526,13 +511,40 @@ bool Gamescene::canMoveCHE(int moveId, int killId, int row, int col)
 
     // 检查路径上是否有其他棋子
     int count = getStoneCountAtLine(r, c, row, col);
+    //qDebug()<<"车的"<<' '<<count;
     if (count != 0)
         return false;
 
     return true;
 }
 
+int Gamescene::getStoneCountAtLine(int row1,int col1,int row2,int col2)
+{
+    int ret=0;//记录直线上的棋子数量(不包括终点和起点）
 
+    //若是两个点一致或是两个点不在同一直线上，则返回-1结束
+    if((row1==row2&&col1==col2)||(row1!=row2&&col1!=col2))
+        return -1;
+
+    if(row1==row2)
+    {
+        for(int col=std::min(col1,col2)+1;col<std::max(col1,col2);col++)
+            if(getStoneId(row1,col)!=-1)
+            {
+                ret++;
+               //qDebug()<<"中间的棋子"<<row1<<' '<<col<<' '<<getStoneId(row1,col);
+            }
+    }
+    else if(col1==col2)
+    {
+        for(int row=std::min(row1,row2)+1;row<std::max(row1,row2);row++)
+            if(getStoneId(row,col1)!=-1)
+            {   ret++;
+                //qDebug()<<"中间的棋子"<<row<<' '<<col1<<' '<<getStoneId(row1,col1);
+            }
+    }
+    return ret;
+}
 
 bool Gamescene::canMovePAO(int moveId, int killId, int row, int col)
 {
