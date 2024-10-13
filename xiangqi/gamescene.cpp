@@ -289,36 +289,36 @@ bool Gamescene::canMove(int moveId, int killId, int row, int col)//棋子走法
     //3.罗列出所有情况，和需要的得到的结果值 ==>  然后进行中间的逻辑层判断
 
     //tm这段注释别删，后面可能要用到
-    // if(stone[moveId].red==stone[killId].red)
-    // {
-    //     if(killId==-1)
-    //     {
-    //         switch(stone[moveId].ty)//根据选中的棋子，来选择对应的走法
-    //         {
-    //         case Stone::JIANG:
-    //             return canMoveJIANG(moveId, killId, row, col);
-    //         case Stone::SHI:
-    //             return canMoveSHI(moveId, killId, row, col);
-    //         case Stone::XIANG:
-    //             return canMoveXIANG(moveId, killId, row, col);
-    //             // case Stone::MA:
-    //             //     return canMoveMA(moveId, killId, row, col);
-    //             // case Stone::CHE:
-    //             //     return canMoveCHE(moveId, killId, row, col);
-    //             // case Stone::PAO:
-    //             //     return canMovePAO(moveId, killId, row, col);
-    //             // case Stone::BING:
-    //             //     return canMoveBING(moveId, killId, row, col);
+    if(stone[moveId].red==stone[killId].red)
+    {
+        if(killId==-1)
+        {
+            switch(stone[moveId].ty)//根据选中的棋子，来选择对应的走法
+            {
+            case Stone::JIANG:
+                return canMoveJIANG(moveId, killId, row, col);
+            case Stone::SHI:
+                return canMoveSHI(moveId, killId, row, col);
+            case Stone::XIANG:
+                return canMoveXIANG(moveId, killId, row, col);
+            case Stone::MA:
+                return canMoveMA(moveId, killId, row, col);
+            case Stone::CHE:
+                return canMoveCHE(moveId, killId, row, col);
+            case Stone::PAO:
+                return canMovePAO(moveId, killId, row, col);
+            case Stone::BING:
+                return canMoveBING(moveId, killId, row, col);
 
-    //         }
-    //     }
-    //     selectid=killId;
-    //     update();
-    //     return false;
-    // }
+            }
+        }
+        selectid=killId;
+        update();
+        return false;
+    }
 
-    // else
-    // {
+    else
+    {
         switch(stone[moveId].ty)//根据选中的棋子，来选择对应的走法
         {
         case Stone::JIANG:
@@ -329,16 +329,16 @@ bool Gamescene::canMove(int moveId, int killId, int row, int col)//棋子走法
             return canMoveXIANG(moveId, killId, row, col);
          case Stone::MA:
              return canMoveMA(moveId, killId, row, col);
-            // case Stone::CHE:
-            //     return canMoveCHE(moveId, killId, row, col);
-            // case Stone::PAO:
-            //     return canMovePAO(moveId, killId, row, col);
-            // case Stone::BING:
-            //     return canMoveBING(moveId, killId, row, col);
+            case Stone::CHE:
+                return canMoveCHE(moveId, killId, row, col);
+            case Stone::PAO:
+                return canMovePAO(moveId, killId, row, col);
+            case Stone::BING:
+                return canMoveBING(moveId, killId, row, col);
 
         }
         return true;
-    // }
+    }
 }
 
 
@@ -468,6 +468,89 @@ bool Gamescene::canMoveSHI(int moveId, int killId, int row, int col)
     }
     return false;
 }
-// bool Gamescene::canMoveCHE(int moveId, int killId, int row, int col);
-// bool Gamescene::canMovePAO(int moveId, int killId, int row, int col);
-// bool Gamescene::canMoveBING(int moveId, int killId, int row, int col);
+
+bool Gamescene::canMoveBING(int moveId, int killId, int row, int col)
+{
+    int r = stone[moveId].row;
+    int c = stone[moveId].col;
+
+    // 兵在红方
+    if(stone[moveId].red)
+    {
+        // 兵未过河
+        if(r <= 4)
+        {
+            // 只能向前走一步
+            if(row == r + 1 && col == c)
+                return true;
+        }
+        else // 兵已过河
+        {
+            // 可以向前、左、右走一步
+            if((row == r + 1 && col == c) || (row == r && col == c + 1) || (row == r && col == c - 1))
+                return true;
+        }
+    }
+    else // 兵在黑方
+    {
+        // 兵未过河
+        if(r >= 5)
+        {
+            // 只能向前走一步
+            if(row == r - 1 && col == c)
+                return true;
+        }
+        else // 兵已过河
+        {
+            // 可以向前、左、右走一步
+            if((row == r - 1 && col == c) || (row == r && col == c + 1) || (row == r && col == c - 1))
+                return true;
+        }
+    }
+
+    return false;
+}
+bool Gamescene::canMoveCHE(int moveId, int killId, int row, int col)
+{
+    int r = stone[moveId].row;
+    int c = stone[moveId].col;
+
+    // 车只能在同一行或同一列移动
+    if (r != row && c != col)
+        return false;
+
+    // 检查路径上是否有其他棋子
+    int count = getStoneCountAtLine(r, c, row, col);
+    if (count != 0)
+        return false;
+
+    return true;
+}
+bool Gamescene::canMovePAO(int moveId, int killId, int row, int col)
+{
+    int r = stone[moveId].row;
+    int c = stone[moveId].col;
+
+    // 炮只能在同一行或同一列移动
+    if (r != row && c != col)
+        return false;
+
+    // 获取路径上棋子的数量
+    int count = getStoneCountAtLine(r, c, row, col);
+
+    if (killId == -1)
+    {
+        // 如果没有要吃的棋子，路径上不能有其他棋子
+        if (count != 0)
+            return false;
+    }
+    else
+    {
+        // 如果有要吃的棋子，路径上必须有且只有一个棋子
+        if (count != 1)
+            return false;
+    }
+
+    return true;
+}
+
