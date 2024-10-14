@@ -1,11 +1,11 @@
 #include "Gamescene.h"
 #include "ui_gamescene.h"
 #include <QDebug>
-#include<QPainter>
-#include<QPen>
+#include <QPainter>
+#include <QPen>
 #include <QColor>
 #include <algorithm>
-#include<math.h>
+#include <math.h>
 
 Gamescene::Gamescene(QWidget *parent)//构造函数（初始化游戏）
     : QWidget(parent)
@@ -23,10 +23,17 @@ Gamescene::Gamescene(QWidget *parent)//构造函数（初始化游戏）
     selectid=-1;//初始化（未选择）
     redtrue=true;//初始化（红方先行）
 
+//":/Music/SceneMusic.mp3"
+    // scenemusic=new QMediaPlayer(this);
+    // control=new QAudioOutput(this);
+    // scenemusic->setAudioOutput(control);
+    // control->setVolume(50);
+    // scenemusic->setSource(QUrl::fromLocalFile("/Music/SceneMusic1.mp3"));
 }
 
 Gamescene::~Gamescene()
 {
+
     delete ui;
 }
 
@@ -248,6 +255,12 @@ void Gamescene::mousePressEvent(QMouseEvent *ev)
     {
         if(canMove(selectid,clicked, row, col ))
         {
+            //落子的声音
+            scenemusic =new QSoundEffect(this);
+            scenemusic->setSource(QUrl::fromLocalFile(":/Music/StoneKill.wav"));
+            scenemusic->setLoopCount(1);
+            scenemusic->play();
+
             // 移动棋子的逻辑
             stone[selectid].row = row;
             stone[selectid].col = col;
