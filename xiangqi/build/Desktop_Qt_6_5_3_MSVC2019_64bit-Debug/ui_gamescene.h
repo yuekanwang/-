@@ -20,6 +20,7 @@ class Ui_Gamescene
 {
 public:
     QPushButton *pushButton;
+    QPushButton *pushButton_2;
 
     void setupUi(QWidget *Gamescene)
     {
@@ -31,6 +32,40 @@ public:
         pushButton->setObjectName("pushButton");
         pushButton->setGeometry(QRect(730, 50, 161, 81));
         pushButton->setStyleSheet(QString::fromUtf8(""));
+        pushButton_2 = new QPushButton(Gamescene);
+        pushButton_2->setObjectName("pushButton_2");
+        pushButton_2->setGeometry(QRect(909, 20, 71, 50));
+        QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+        sizePolicy.setHorizontalStretch(0);
+        sizePolicy.setVerticalStretch(0);
+        sizePolicy.setHeightForWidth(pushButton_2->sizePolicy().hasHeightForWidth());
+        pushButton_2->setSizePolicy(sizePolicy);
+        pushButton_2->setMinimumSize(QSize(50, 50));
+        pushButton_2->setCursor(QCursor(Qt::PointingHandCursor));
+        pushButton_2->setStyleSheet(QString::fromUtf8("QPushButton\n"
+"{\n"
+"	color:black;\n"
+"\n"
+"	font: 15pt \"\345\215\216\346\226\207\350\241\214\346\245\267\";\n"
+"\n"
+"	background-color:#47afff;\n"
+"\n"
+"	border-radius:10px;\n"
+"}\n"
+"\n"
+"QPushButton:hover\n"
+"{\n"
+"	color:black;\n"
+"\n"
+"	font: 15pt \"\345\215\216\346\226\207\350\241\214\346\245\267\";\n"
+"\n"
+"	background-color:#99d8ff;\n"
+"\n"
+"   border-radius:10px;\n"
+"}"));
+        pushButton_2->setCheckable(true);
+        pushButton_2->setChecked(true);
+        pushButton_2->setAutoExclusive(true);
 
         retranslateUi(Gamescene);
 
@@ -41,6 +76,7 @@ public:
     {
         Gamescene->setWindowTitle(QCoreApplication::translate("Gamescene", "Form", nullptr));
         pushButton->setText(QString());
+        pushButton_2->setText(QCoreApplication::translate("Gamescene", "\351\237\263\344\271\220\346\211\223\345\274\200", nullptr));
     } // retranslateUi
 
 };

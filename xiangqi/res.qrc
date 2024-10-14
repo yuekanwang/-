@@ -4,9 +4,5 @@
         <file>mainscene/Gamesceneprint.jpg</file>
         <file>mainscene/lansheep.png</file>
         <file>mainscene/GameSceneprint2.png</file>
-        <file>Music/StoneKill.wav</file>
-        <file>Music/StoneMove.wav</file>
-        <file>Music/SceneMusic1.wav</file>
-        <file>Music/SceneMusic2.wav</file>
     </qresource>
 </RCC>

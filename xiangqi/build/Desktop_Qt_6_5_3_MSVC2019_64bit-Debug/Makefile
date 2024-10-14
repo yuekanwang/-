@@ -267,6 +267,7 @@ Makefile: ..\..\xiangqi.pro D:\Qt\6.5.3\msvc2019_64\mkspecs\win32-msvc\qmake.con
 		D:\Qt\6.5.3\msvc2019_64\lib\Qt6Core.prl \
 		D:\Qt\6.5.3\msvc2019_64\lib\Qt6EntryPoint.prl \
 		D:\Qt\6.5.3\msvc2019_64\mkspecs\features\build_pass.prf \
+		..\..\music.qrc \
 		..\..\res.qrc \
 		D:\Qt\6.5.3\msvc2019_64\lib\Qt6Multimediad.prl \
 		D:\Qt\6.5.3\msvc2019_64\lib\Qt6Widgetsd.prl \
@@ -458,6 +459,7 @@ D:\Qt\6.5.3\msvc2019_64\lib\Qt6Network.prl:
 D:\Qt\6.5.3\msvc2019_64\lib\Qt6Core.prl:
 D:\Qt\6.5.3\msvc2019_64\lib\Qt6EntryPoint.prl:
 D:\Qt\6.5.3\msvc2019_64\mkspecs\features\build_pass.prf:
+..\..\music.qrc:
 ..\..\res.qrc:
 D:\Qt\6.5.3\msvc2019_64\lib\Qt6Multimediad.prl:
 D:\Qt\6.5.3\msvc2019_64\lib\Qt6Widgetsd.prl:

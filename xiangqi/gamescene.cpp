@@ -23,12 +23,28 @@ Gamescene::Gamescene(QWidget *parent)//构造函数（初始化游戏）
     selectid=-1;//初始化（未选择）
     redtrue=true;//初始化（红方先行）
 
-//":/Music/SceneMusic.mp3"
-    // scenemusic=new QMediaPlayer(this);
-    // control=new QAudioOutput(this);
-    // scenemusic->setAudioOutput(control);
-    // control->setVolume(50);
-    // scenemusic->setSource(QUrl::fromLocalFile("/Music/SceneMusic1.mp3"));
+    //游戏对战页面背景音乐
+    scenemusic=new QMediaPlayer(this);//播放器
+    control=new QAudioOutput(this);//控制器
+    scenemusic->setAudioOutput(control);//播放器输入由控制器控制
+    control->setVolume(0.3);//音量
+    scenemusic->setSource(QUrl("qrc:/Music/SceneMusic2.mp3"));
+    scenemusic->setLoops(-1);
+
+    connect(ui->pushButton_2,&QPushButton::clicked,[=](){
+        if(!scenemusic->isPlaying())
+        {
+            scenemusic->play();
+            ui->pushButton_2->setText("音乐打开");
+        }
+        else
+        {
+            scenemusic->stop();
+            ui->pushButton_2->setText("音乐关闭");
+        }
+    });
+    scenemusic->play();
+
 }
 
 Gamescene::~Gamescene()
@@ -256,10 +272,10 @@ void Gamescene::mousePressEvent(QMouseEvent *ev)
         if(canMove(selectid,clicked, row, col ))
         {
             //落子的声音
-            scenemusic =new QSoundEffect(this);
-            scenemusic->setSource(QUrl::fromLocalFile(":/Music/StoneKill.wav"));
-            scenemusic->setLoopCount(1);
-            scenemusic->play();
+            stonemovemusic =new QSoundEffect(this);
+            stonemovemusic->setSource(QUrl::fromLocalFile(":/Music/StoneKill.wav"));
+            stonemovemusic->setLoopCount(1);
+            stonemovemusic->play();
 
             // 移动棋子的逻辑
             stone[selectid].row = row;

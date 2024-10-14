@@ -2,8 +2,8 @@
 #define GAMESCENE_H
 #include <QMouseEvent>
 #include <QWidget>
- // #include <QMediaPlayer>
- // #include <QAudioOutput>
+#include <QMediaPlayer>
+#include <QAudioOutput>
 #include <QSoundEffect>
 #include "Stone.h"
 namespace Ui {
@@ -53,10 +53,12 @@ public:
     bool redtrue;//红旗先下标志
     int gz=100;//棋盘向右移动100
 
-    //设置音乐
-     // QMediaPlayer *scenemusic =nullptr;//播放器类
-     // QAudioOutput *control=nullptr;//控制输出类
-     QSoundEffect *scenemusic;
+    //设置背景音乐
+    QMediaPlayer *scenemusic =nullptr;//播放器类
+    QAudioOutput *control=nullptr;//控制输出类
+
+    //设置棋子音效
+    QSoundEffect *stonemovemusic;
 
 private:
     Ui::Gamescene *ui;
