@@ -6,7 +6,7 @@
 #include <QColor>
 #include <algorithm>
 #include <math.h>
-
+#include<QMessageBox>
 Gamescene::Gamescene(QWidget *parent)//构造函数（初始化游戏）
     : QWidget(parent)
     , ui(new Ui::Gamescene)
@@ -284,6 +284,15 @@ void Gamescene::mousePressEvent(QMouseEvent *ev)
                 stone[clicked].death = true;
 
             selectid = -1;
+            if(isDefeated())//被将死
+            {
+                reset();
+                // if(stone[4].death&&!stone[20].death)
+                //     winMessageBox("提示", "本局结束，黑方胜利.");
+                // if(stone[20].death&&!stone[4].death)
+                //     winMessageBox("提示", "本局结束，红方胜利.");
+                whoWin();
+            }
             redtrue = !redtrue;// 轮到对方
 
         }
@@ -359,6 +368,15 @@ bool Gamescene::canMove(int moveId, int killId, int row, int col)//棋子走法
 
 bool Gamescene::canMoveJIANG(int moveId, int killId, int row, int col)
 {
+
+    // 检查将军是否面对面
+    if (face())
+    {
+        // 如果两个将军之间没有棋子，那么将军的走法与车一致
+        if (canMoveCHE(moveId, killId, row, col))
+            return true;
+    }
+
     //将军不能超出营地
     if(stone[moveId].red)//红方
     {
@@ -603,3 +621,90 @@ bool Gamescene::canMovePAO(int moveId, int killId, int row, int col)
     return true;
 }
 
+void Gamescene::reset() // 分出胜负之后重置界面
+{
+    // 重置所有棋子的状态
+    for(int i=0;i<32;i++)
+    {
+        stone[i].initialize(i);//(initialize)初始化棋子
+    }
+
+    selectid = -1;
+    clicked = -1;
+    // 重置当前玩家
+    //redtrue = true;
+
+    // 刷新界面
+    update();
+}
+bool Gamescene::face() // 将军面对面
+{
+    int colBlack = stone[4].col;
+    int colRed = stone[20].col;
+    int rowBlack = stone[4].row;
+    int rowRed = stone[20].row;
+
+    bool colEmpty = true;
+    if (colBlack == colRed) {
+        for (int row = rowBlack + 1; row < rowRed; ++row) {
+            if (getStoneId(row, colBlack) != -1) {
+                colEmpty = false;  // 将之间有棋子；非此列为空
+                break;
+            }
+        }
+    } else {
+        colEmpty = false;
+    }
+
+    return colEmpty;
+}
+bool Gamescene::isDefeated() // 被将死
+{
+    int generalId = 20; // 黑将
+    if (redtrue)
+        generalId = 4;
+
+    int row = stone[generalId].row; // 当前回合方的将军row
+    int col = stone[generalId].col; // 当前回合方的将军col
+
+    if(redtrue)
+    {
+        for(int i=16;i<32;i++)//红方回合判断黑棋
+        {
+            if(canMove(i,generalId,row,col)&&!stone[i].death)
+            {
+                return true;
+            }
+        }
+    }
+    else
+    {
+        for(int i=0;i<16;i++)//黑方回合判断红棋
+        {
+            if(canMove(i,generalId,row,col)&&!stone[i].death)
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+void Gamescene::whoWin()
+{
+    if(!stone[4].death&&stone[20].death)
+    {
+        reset();
+        winMessageBox("提示", "本局结束，红方胜利.");
+    }
+
+    if(stone[4].death&&!stone[20].death)
+    {
+        reset();
+        //winMessageBox();
+    }
+}
+void Gamescene::winMessageBox(QString title, QString msg)//这个函数我想用来实现
+{
+
+}

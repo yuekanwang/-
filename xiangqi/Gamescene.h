@@ -43,6 +43,7 @@ public:
     bool canMovePAO(int moveId, int killId, int row, int col);
     bool canMoveBING(int moveId, int killId, int row, int col);
 
+
     Stone stone[32];
     int r;//棋子半径
     int offset;//距离界面的边距
@@ -59,6 +60,13 @@ public:
 
     //设置棋子音效
     QSoundEffect *stonemovemusic;
+
+    //处理被将军的情况
+    void reset();
+    bool face();
+    bool isDefeated();
+    void whoWin();
+    void winMessageBox(QString title, QString msg);
 
 private:
     Ui::Gamescene *ui;
