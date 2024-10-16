@@ -6,5 +6,6 @@
         <file>Music/SceneMusic2.mp3</file>
         <file>Music/StoneKill.wav</file>
         <file>Music/StoneMove.wav</file>
+        <file>Music/attack.mp3</file>
     </qresource>
 </RCC>

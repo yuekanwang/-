@@ -284,7 +284,7 @@ void Gamescene::mousePressEvent(QMouseEvent *ev)
                 stone[clicked].death = true;
 
             selectid = -1;
-            if(isDefeated())//被将死
+            if(isDefeated())//一方移动完成后，判断对方是否有棋子可以直接攻击到自己将军
             {
                 reset();
                 // if(stone[4].death&&!stone[20].death)
@@ -293,6 +293,17 @@ void Gamescene::mousePressEvent(QMouseEvent *ev)
                 //     winMessageBox("提示", "本局结束，红方胜利.");
                 whoWin();
             }
+            if(isAttack())
+            {
+                //这里弄个声音提示将军了
+                attackmusic =new QSoundEffect(this);
+                attackmusic->setSource(QUrl::fromLocalFile(":/Music/attack.mp3"));//这里出错了
+                //错误代码：QSoundEffect(qaudio): Error decoding source file::/Music/attack.mp3
+                //应该是我在酷狗下的音乐不兼容
+                attackmusic->setLoopCount(1);
+                attackmusic->play();
+            }
+            //判断完再换边
             redtrue = !redtrue;// 轮到对方
 
         }
@@ -631,7 +642,6 @@ void Gamescene::reset() // 分出胜负之后重置界面
 
     selectid = -1;
     clicked = -1;
-    // 重置当前玩家
     //redtrue = true;
 
     // 刷新界面
@@ -661,6 +671,7 @@ bool Gamescene::face() // 将军面对面
 bool Gamescene::isDefeated() // 被将死
 {
     int generalId = 20; // 黑将
+//默认是黑方回合，判断是否有红棋可以直接攻击到将军
     if (redtrue)
         generalId = 4;
 
@@ -669,7 +680,7 @@ bool Gamescene::isDefeated() // 被将死
 
     if(redtrue)
     {
-        for(int i=16;i<32;i++)//红方回合判断黑棋
+        for(int i=16;i<32;i++)
         {
             if(canMove(i,generalId,row,col)&&!stone[i].death)
             {
@@ -679,7 +690,43 @@ bool Gamescene::isDefeated() // 被将死
     }
     else
     {
-        for(int i=0;i<16;i++)//黑方回合判断红棋
+        for(int i=0;i<16;i++)
+        {
+            if(canMove(i,generalId,row,col)&&!stone[i].death)
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+bool Gamescene::isAttack() // 将军对面
+{
+    //用来判断下完一步棋后，是否有棋子可以将军到对面
+    int generalId = 20; // 黑将
+//红方攻击黑将
+    if (!redtrue)
+        generalId = 4;
+
+    int row = stone[generalId].row; // 当前回合方的将军row
+    int col = stone[generalId].col; // 当前回合方的将军col
+
+    if(redtrue)
+    {
+        for(int i=0;i<16;i++)
+        {
+            if(canMove(i,generalId,row,col)&&!stone[i].death)
+            {
+                qDebug()<<stone[i].row<<' '<<stone[i].col;
+                return true;
+            }
+        }
+    }
+    else
+    {
+        for(int i=16;i<32;i++)
         {
             if(canMove(i,generalId,row,col)&&!stone[i].death)
             {
