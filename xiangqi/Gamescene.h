@@ -66,7 +66,7 @@ public:
     //处理被将军的情况
     void reset();
     bool face();
-    bool isDefeated();//被将死 这个函数只要稍微修改一下就可以改成判断送将的函数
+    bool isDefeated(bool f);//被将死 这个函数只要稍微修改一下就可以改成判断送将的函数
     bool isAttack();
     void whoWin();
     void winMessageBox(QString title, QString msg);
