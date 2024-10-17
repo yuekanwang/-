@@ -6,7 +6,8 @@
 #include <QColor>
 #include <algorithm>
 #include <math.h>
-#include<QMessageBox>
+#include <QMessageBox>
+#include <vector>
 Gamescene::Gamescene(QWidget *parent)//构造函数（初始化游戏）
     : QWidget(parent)
     , ui(new Ui::Gamescene)
@@ -262,10 +263,10 @@ void Gamescene::mousePressEvent(QMouseEvent *ev)
                 selectid = clicked;
         }
     }
-    else if(selectid!=-1&&clicked!=-1&&stone[selectid].red==stone[clicked].red)//想换个棋子选
-    {
-        selectid = clicked;
-    }
+    // else if(selectid!=-1&&clicked!=-1&&stone[selectid].red==stone[clicked].red)//想换个棋子选
+    // {
+    //     selectid = clicked;
+    // }
 
     else//走棋子
     {
@@ -293,19 +294,29 @@ void Gamescene::mousePressEvent(QMouseEvent *ev)
             if(clicked != -1)
                 stone[clicked].death = true;
             selectid = -1;// 取消选择
+
             //落子的声音
             stonemovemusic =new QSoundEffect(this);
             stonemovemusic->setSource(QUrl::fromLocalFile(":/Music/StoneKill.wav"));
             stonemovemusic->setLoopCount(1);
             stonemovemusic->play();
+
             if(isDefeated(1))
             {
-                //这里弄个声音提示将军了
-                attackmusic =new QSoundEffect(this);
-                attackmusic->setSource(QUrl::fromLocalFile(":/Music/attack.wav"));
-                attackmusic->setLoopCount(1);
-                attackmusic->play();
+                if(Attacked())
+                {
+                    //这里弄个声音提示将军了
+                    attackmusic =new QSoundEffect(this);
+                    attackmusic->setSource(QUrl::fromLocalFile(":/Music/attack.wav"));
+                    attackmusic->setLoopCount(1);
+                    attackmusic->play();
+                }
+                else
+                {
+                    whoWin();
+                }
             }
+
             //判断完再换边
             redtrue = !redtrue;// 轮到对方
 
@@ -313,10 +324,107 @@ void Gamescene::mousePressEvent(QMouseEvent *ev)
 
     }
     update();// 刷新界面
-
 }
 
 
+
+ bool Gamescene::Attacked()
+{
+    // //redtrue = !redtrue;
+
+    int i=0;
+    if(redtrue)
+        i=16;
+
+    int i_=i+16;
+    //qDebug()<<i;
+    for(;i<i_;i++)
+    {
+        int row_=stone[i].row;
+        int col_=stone[i].col;
+        //qDebug()<<"所选棋子"<<' '<<stone[i].ty<<' '<<stone[i].row<<' '<<stone[i].col;
+        if(!stone[i].death)
+        {
+            for(int row=0;row<=9;row++)
+            {
+                for(int col=0;col<=8;col++)
+                {
+
+                    // stone[i].row=row;
+                    // stone[i].col=col;
+                    if(canMove(i,getStoneId(row,col),row,col))
+                    {
+                        qDebug()<<canMove(i,getStoneId(row,col),row,col)<<' '<<stone[i].ty<<' '<<stone[16].ty<<' '<<stone[15].ty;
+                        stone[i].row=row;
+                        stone[i].col=col;
+                        qDebug()<<"特殊"<<isDefeated(1)<<' '<<i<<' '<<canMove(i,getStoneId(row,col),row,col);
+                        if(isDefeated(1)==0)
+                        {
+                            stone[i].row=row_;
+                            stone[i].col=col_;
+                            qDebug()<<"能动的位置"<<row_<<' '<<col_<<' '<<i;
+                            qDebug()<<"能去的位置"<<row<<' '<<col<<' '<<i;
+                            //redtrue = !redtrue;
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return false;
+
+}
+
+int Gamescene::isDefeated(bool f) // 送将或被将的函数
+{
+    //f==0时，默认是黑方回合，判断是否有红棋可以直接攻击到将军,以改变关键变量来控制
+    int generalId = 20,i=16,j=0; // 黑将
+    if (redtrue)//站在红方的角度
+        generalId = 4;
+
+    //f==1时，用来判断下完一步棋后，是否有棋子可以将军到对面,以改变关键变量来控制
+    if(f==true)
+    {
+        i=0,j=16;
+        generalId = 4;
+        if(redtrue)
+            generalId = 20;
+    }
+    int i_=i+16,j_=j+16;
+
+    int row = stone[generalId].row; // 当前回合方的将军row
+    int col = stone[generalId].col; // 当前回合方的将军col
+
+    int dangerous_sum=0;//将军的危险数量
+
+    if(redtrue)
+    {
+        for(;i<i_;i++)
+        {
+            if(canMove(i,generalId,row,col)&&!stone[i].death)
+            {
+                dangerous_sum++;
+                //qDebug()<<"能将军的棋子"<<stone[i].row<<' '<<stone[i].col;
+                //return true;
+            }
+        }
+    }
+    else
+    {
+        for(;j<j_;j++)
+        {
+            if(canMove(j,generalId,row,col)&&!stone[j].death)
+            {
+                dangerous_sum++;
+                qDebug()<<"能将军的棋子"<<stone[j].row<<' '<<stone[j].col;
+                //return true;
+            }
+        }
+    }
+
+    return dangerous_sum;//比起之前的bool值，现在既能量化危险数量。
+}
 
 //总的移动规则，选中准备下的棋子，被杀的棋子， 准备移动到的目的行列值
 bool Gamescene::canMove(int moveId, int killId, int row, int col)//棋子走法
@@ -326,36 +434,36 @@ bool Gamescene::canMove(int moveId, int killId, int row, int col)//棋子走法
     //3.罗列出所有情况，和需要的得到的结果值 ==>  然后进行中间的逻辑层判断
 
     //tm这段注释别删，后面可能要用到
-    // if(stone[moveId].red==stone[killId].red)
-    // {
-    //     if(killId==-1)
-    //     {
-    //         switch(stone[moveId].ty)//根据选中的棋子，来选择对应的走法
-    //         {
-    //         case Stone::JIANG:
-    //             return canMoveJIANG(moveId, killId, row, col);
-    //         case Stone::SHI:
-    //             return canMoveSHI(moveId, killId, row, col);
-    //         case Stone::XIANG:
-    //             return canMoveXIANG(moveId, killId, row, col);
-    //         case Stone::MA:
-    //             return canMoveMA(moveId, killId, row, col);
-    //         case Stone::CHE:
-    //             return canMoveCHE(moveId, killId, row, col);
-    //         case Stone::PAO:
-    //             return canMovePAO(moveId, killId, row, col);
-    //         case Stone::BING:
-    //             return canMoveBING(moveId, killId, row, col);
+    if(stone[moveId].red==stone[killId].red)
+    {
+        if(killId==-1)
+        {
+            switch(stone[moveId].ty)//根据选中的棋子，来选择对应的走法
+            {
+            case Stone::JIANG:
+                return canMoveJIANG(moveId, killId, row, col);
+            case Stone::SHI:
+                return canMoveSHI(moveId, killId, row, col);
+            case Stone::XIANG:
+                return canMoveXIANG(moveId, killId, row, col);
+            case Stone::MA:
+                return canMoveMA(moveId, killId, row, col);
+            case Stone::CHE:
+                return canMoveCHE(moveId, killId, row, col);
+            case Stone::PAO:
+                return canMovePAO(moveId, killId, row, col);
+            case Stone::BING:
+                return canMoveBING(moveId, killId, row, col);
 
-    //         }
-    //     }
-    //     selectid=killId;
-    //     update();
-    //     return false;
-    // }
+            }
+        }
+        selectid=killId;
+        update();
+        return false;
+    }
 
-    // else
-    // {
+    else
+    {
         switch(stone[moveId].ty)//根据选中的棋子，来选择对应的走法
         {
         case Stone::JIANG:
@@ -366,16 +474,16 @@ bool Gamescene::canMove(int moveId, int killId, int row, int col)//棋子走法
             return canMoveXIANG(moveId, killId, row, col);
          case Stone::MA:
              return canMoveMA(moveId, killId, row, col);
-            case Stone::CHE:
+        case Stone::CHE:
                 return canMoveCHE(moveId, killId, row, col);
-            case Stone::PAO:
+        case Stone::PAO:
                 return canMovePAO(moveId, killId, row, col);
-            case Stone::BING:
+        case Stone::BING:
                 return canMoveBING(moveId, killId, row, col);
 
         }
         return true;
-   // }
+    }
 }
 
 
@@ -673,67 +781,30 @@ bool Gamescene::face() // 将军面对面
 }
 
 
-bool Gamescene::isDefeated(bool f) // 被将死
-{
-    //f==0时，默认是黑方回合，判断是否有红棋可以直接攻击到将军,以改变关键变量来控制
-    int generalId = 20,i=16,j=0; // 黑将
-    if (redtrue)//站在红方的角度
-        generalId = 4;
 
-    //f==1时，用来判断下完一步棋后，是否有棋子可以将军到对面,以改变关键变量来控制
-    if(f==true)
-    {
-        i=0,j=16;
-        generalId = 4;
-        if(redtrue)
-            generalId = 20;
-    }
-    int i_=i+16,j_=j+16;
-
-    int row = stone[generalId].row; // 当前回合方的将军row
-    int col = stone[generalId].col; // 当前回合方的将军col
-
-    if(redtrue)
-    {
-        for(;i<i_;i++)
-        {
-            if(canMove(i,generalId,row,col)&&!stone[i].death)
-            {
-                //qDebug()<<stone[i].row<<' '<<stone[i].col;
-                return true;
-            }
-        }
-    }
-    else
-    {
-        for(;j<j_;j++)
-        {
-            if(canMove(j,generalId,row,col)&&!stone[j].death)
-            {
-                //qDebug()<<stone[j].row<<' '<<stone[j].col;
-                return true;
-            }
-        }
-    }
-
-    return false;
-}
 
 
 
 void Gamescene::whoWin()
 {
-    if(!stone[4].death&&stone[20].death)
-    {
-        reset();
-        winMessageBox("提示", "本局结束，红方胜利.");
-    }
+    Loremusic =new QSoundEffect(this);
+    Loremusic->setSource(QUrl::fromLocalFile(":/Music/Lore.wav"));
+    Loremusic->setLoopCount(1);
+    Loremusic->play();
 
-    if(stone[4].death&&!stone[20].death)
-    {
-        reset();
-        //winMessageBox();
-    }
+    // if(!stone[4].death&&stone[20].death)
+    // {
+    //     reset();
+    //     winMessageBox("提示", "本局结束，红方胜利.");
+    // }
+
+    // if(stone[4].death&&!stone[20].death)
+    // {
+    //     reset();
+    //     //winMessageBox();
+    // }
+
+
 }
 void Gamescene::winMessageBox(QString title, QString msg)//这个函数我想用来实现
 {
