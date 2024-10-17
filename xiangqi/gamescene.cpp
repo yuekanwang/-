@@ -286,6 +286,7 @@ void Gamescene::mousePressEvent(QMouseEvent *ev)
                 stone[selectid].col = col_;
                 if(clicked != -1)
                     stone[clicked].death = false;
+                //winMessageBox("提示", "本局结束，黑方胜利.");//test winmessageBox函数
                 update();
                 return ;
 
@@ -301,6 +302,13 @@ void Gamescene::mousePressEvent(QMouseEvent *ev)
             if(isDefeated(1))
             {
                 //这里弄个声音提示将军了
+                if(isOver())
+                {
+                    whoWin();
+                    qDebug()<<stone[20].row<<' '<<stone[20].col;
+
+
+                }
                 attackmusic =new QSoundEffect(this);
                 attackmusic->setSource(QUrl::fromLocalFile(":/Music/attack.wav"));
                 attackmusic->setLoopCount(1);
@@ -673,7 +681,7 @@ bool Gamescene::face() // 将军面对面
 }
 
 
-bool Gamescene::isDefeated(bool f) // 被将死
+bool Gamescene::isDefeated(bool f)
 {
     //f==0时，默认是黑方回合，判断是否有红棋可以直接攻击到将军,以改变关键变量来控制
     int generalId = 20,i=16,j=0; // 黑将
@@ -719,7 +727,103 @@ bool Gamescene::isDefeated(bool f) // 被将死
     return false;
 }
 
+bool Gamescene::isOver()
+{
+    int generalId = 20;
+    if (!redtrue)
+        generalId = 4;
 
+
+    if(!redtrue)
+    {
+        for(int i=0;i<16;i++)
+        {
+            //遍历编号为i的棋子所有可以走到的地方，看是否有棋子可以让isDefeated(1)变成false
+            int row_=stone[i].row;//记录原本的位置
+            int col_=stone[i].col;
+            for(int row=0;row<10;row++)
+            {
+                for(int col=0;col<9;col++)
+                {
+                    if(canMove(i,-1,row,col)&&!stone[i].death)
+                    {
+                        stone[i].row=row;
+                        stone[i].col=col;
+                        if(!isDefeated(1))
+                        {
+                            return false;
+                        }
+                        // if(clicked != -1)
+                        stone[i].row=row_;
+                        stone[i].col=col_;
+                    }
+                    for(int k=16;k<32;k++)
+                    {
+                        if(canMove(i,k,row,col)&&!stone[i].death)
+                        {
+                            stone[i].row=row;
+                            stone[i].col=col;
+                            if(!isDefeated(1))
+                            {
+                                return false;
+                            }
+                            // if(clicked != -1)
+                            stone[k].death = false;
+                            stone[i].row=row_;
+                            stone[i].col=col_;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        for(int i=16;i<32;i++)
+        {
+            //遍历编号为i的棋子所有可以走到的地方，看是否有棋子可以让isDefeated(1)变成false
+            int row_=stone[i].row;//记录原本的位置
+            int col_=stone[i].col;
+            for(int row=0;row<10;row++)
+            {
+                for(int col=0;col<9;col++)
+                {
+                    if(canMove(i,-1,row,col)&&!stone[i].death)
+                    {
+                        stone[i].row=row;
+                        stone[i].col=col;
+                        if(!isDefeated(1))
+                        {
+                            return false;
+                        }
+                        // if(clicked != -1)
+                        //     stone[k].death = false;
+                        stone[i].row=row_;
+                        stone[i].col=col_;
+                    }
+                    for(int k=0;k<16;k++)
+                    {
+                        if(canMove(i,k,row,col)&&!stone[i].death)
+                        {
+                            stone[i].row=row;
+                            stone[i].col=col;
+                            if(!isDefeated(1))
+                            {
+                                return false;
+                            }
+                            // if(clicked != -1)
+                            stone[k].death = false;
+                            stone[i].row=row_;
+                            stone[i].col=col_;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    stone[generalId].death=true;//输了
+    return true;
+}
 
 void Gamescene::whoWin()
 {
@@ -732,10 +836,15 @@ void Gamescene::whoWin()
     if(stone[4].death&&!stone[20].death)
     {
         reset();
-        //winMessageBox();
+        winMessageBox("提示", "本局结束，黑方胜利.");
     }
 }
-void Gamescene::winMessageBox(QString title, QString msg)//这个函数我想用来实现
+void Gamescene::winMessageBox(QString title, QString msg)
 {
-
+    QMessageBox msgBox;
+    msgBox.setWindowTitle(title);
+    msgBox.setText(msg);
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    msgBox.exec();
 }

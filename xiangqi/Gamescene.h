@@ -53,6 +53,7 @@ public:
     int clicked;//用鼠标选中棋子的id
     bool redtrue;//红旗先下标志
     int gz=100;//棋盘向右移动100
+    //bool flag=false;//用于判断上一回合是否被将军，用于区别被绝杀还是送将
 
     //设置背景音乐
     QMediaPlayer *scenemusic =nullptr;//播放器类
@@ -66,7 +67,8 @@ public:
     //处理被将军的情况
     void reset();
     bool face();
-    bool isDefeated(bool f);//被将死 这个函数只要稍微修改一下就可以改成判断送将的函数
+    bool isDefeated(bool f);//判断送将和将军
+    bool isOver();
     bool isAttack();
     void whoWin();
     void winMessageBox(QString title, QString msg);
