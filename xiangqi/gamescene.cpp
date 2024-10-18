@@ -280,17 +280,17 @@ void Gamescene::mousePressEvent(QMouseEvent *ev)
 
             //当isDefeated输入的参数为0时，为“送将”函数。输入的参数为1时，为“被将”函数。
 
-            if(isDefeated(0))//一方移动完成后，判断是否送将，是则回溯
-            {
-                stone[selectid].row = row_;
-                stone[selectid].col = col_;
-                if(clicked != -1)
-                    stone[clicked].death = false;
-                //winMessageBox("提示", "本局结束，黑方胜利.");//test winmessageBox函数
-                update();
-                return ;
+            // if(isDefeated(0))//一方移动完成后，判断是否送将，是则回溯
+            // {
+            //     stone[selectid].row = row_;
+            //     stone[selectid].col = col_;
+            //     if(clicked != -1)
+            //         stone[clicked].death = false;
+            //     //winMessageBox("提示", "本局结束，黑方胜利.");//test winmessageBox函数
+            //     update();
+            //     return ;
 
-            }
+            // }
             if(clicked != -1)
                 stone[clicked].death = true;
             selectid = -1;// 取消选择
@@ -302,22 +302,12 @@ void Gamescene::mousePressEvent(QMouseEvent *ev)
             if(isDefeated(1))
             {
                 //这里弄个声音提示将军了
-                if(isOver())
-                {
-                    Lorekmusic =new QSoundEffect(this);
-                    Lorekmusic->setSource(QUrl::fromLocalFile(":/Music/Lore.wav"));
-                    Lorekmusic->setLoopCount(1);
-                    Lorekmusic->play();
-                    whoWin();
-                    redtrue=true;
-                    //update();
-                    return;
-                }
                 attackmusic =new QSoundEffect(this);
                 attackmusic->setSource(QUrl::fromLocalFile(":/Music/attack.wav"));
                 attackmusic->setLoopCount(1);
                 attackmusic->play();
             }
+            whoWin();
             //判断完再换边
             redtrue = !redtrue;// 轮到对方
 
@@ -338,36 +328,36 @@ bool Gamescene::canMove(int moveId, int killId, int row, int col)//棋子走法
     //3.罗列出所有情况，和需要的得到的结果值 ==>  然后进行中间的逻辑层判断
 
     //tm这段注释别删，后面可能要用到
-    // if(stone[moveId].red==stone[killId].red)
-    // {
-    //     if(killId==-1)
-    //     {
-    //         switch(stone[moveId].ty)//根据选中的棋子，来选择对应的走法
-    //         {
-    //         case Stone::JIANG:
-    //             return canMoveJIANG(moveId, killId, row, col);
-    //         case Stone::SHI:
-    //             return canMoveSHI(moveId, killId, row, col);
-    //         case Stone::XIANG:
-    //             return canMoveXIANG(moveId, killId, row, col);
-    //         case Stone::MA:
-    //             return canMoveMA(moveId, killId, row, col);
-    //         case Stone::CHE:
-    //             return canMoveCHE(moveId, killId, row, col);
-    //         case Stone::PAO:
-    //             return canMovePAO(moveId, killId, row, col);
-    //         case Stone::BING:
-    //             return canMoveBING(moveId, killId, row, col);
+    if(stone[moveId].red==stone[killId].red)
+    {
+        if(killId==-1)
+        {
+            switch(stone[moveId].ty)//根据选中的棋子，来选择对应的走法
+            {
+            case Stone::JIANG:
+                return canMoveJIANG(moveId, killId, row, col);
+            case Stone::SHI:
+                return canMoveSHI(moveId, killId, row, col);
+            case Stone::XIANG:
+                return canMoveXIANG(moveId, killId, row, col);
+            case Stone::MA:
+                return canMoveMA(moveId, killId, row, col);
+            case Stone::CHE:
+                return canMoveCHE(moveId, killId, row, col);
+            case Stone::PAO:
+                return canMovePAO(moveId, killId, row, col);
+            case Stone::BING:
+                return canMoveBING(moveId, killId, row, col);
 
-    //         }
-    //     }
-    //     selectid=killId;
-    //     update();
-    //     return false;
-    // }
+            }
+        }
+        selectid=killId;
+        update();
+        return false;
+    }
 
-    // else
-    // {
+    else
+    {
         switch(stone[moveId].ty)//根据选中的棋子，来选择对应的走法
         {
         case Stone::JIANG:
@@ -387,7 +377,7 @@ bool Gamescene::canMove(int moveId, int killId, int row, int col)//棋子走法
 
         }
         return true;
-   // }
+    }
 }
 
 
@@ -731,130 +721,26 @@ bool Gamescene::isDefeated(bool f)
     return false;
 }
 
-bool Gamescene::isOver()
-{
-    int generalId = 20;
-    if (!redtrue)
-        generalId = 4;
 
-
-    if(!redtrue)
-    {
-        for(int i=0;i<16;i++)
-        {
-            //遍历编号为i的棋子所有可以走到的地方，看是否有棋子可以让isDefeated(1)变成false
-            int row_=stone[i].row;//记录原本的位置
-            int col_=stone[i].col;
-            for(int row=0;row<10;row++)
-            {
-                for(int col=0;col<9;col++)
-                {
-                    if(canMove(i,-1,row,col)&&!stone[i].death&&!getStoneId(row,col))
-                    {
-                        stone[i].row=row;
-                        stone[i].col=col;
-                        if(!isDefeated(1))
-                        {
-                            qDebug()<<row_<<' '<<col_<<"去-1"<<row<<' '<<col;
-                            stone[i].row=row_;
-                            stone[i].col=col_;
-                            return false;
-                        }
-                        // if(clicked != -1)
-                        stone[i].row=row_;
-                        stone[i].col=col_;
-                    }
-                    for(int k=16;k<32;k++)
-                    {
-                        if(canMove(i,k,stone[k].row,stone[k].col)&&!stone[i].death)
-                        {
-                            stone[i].row=row;
-                            stone[i].col=col;
-                            //stone[k].death=true;
-                            if(!isDefeated(1))
-                            {
-                               qDebug()<<row_<<' '<<col_<<"去c"<<stone[k].row<<' '<<stone[k].col;
-                                stone[i].row=row_;
-                                stone[i].col=col_;
-                                stone[k].death = false;
-                                return false;
-                            }
-                            // if(clicked != -1)
-                            stone[k].death = false;
-                            stone[i].row=row_;
-                            stone[i].col=col_;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    else
-    {
-        for(int i=16;i<32;i++)
-        {
-            //遍历编号为i的棋子所有可以走到的地方，看是否有棋子可以让isDefeated(1)变成false
-            int row_=stone[i].row;//记录原本的位置
-            int col_=stone[i].col;
-            for(int row=0;row<10;row++)
-            {
-                for(int col=0;col<9;col++)
-                {
-                    if(canMove(i,-1,row,col)&&!stone[i].death&&!getStoneId(row,col))
-                    {
-                        stone[i].row=row;
-                        stone[i].col=col;
-                        if(!isDefeated(1))
-                        {
-                            qDebug()<<row_<<' '<<col_<<"去-1"<<row<<' '<<col;
-                            stone[i].row=row_;
-                            stone[i].col=col_;
-                            return false;
-                        }
-                        // if(clicked != -1)
-                        //     stone[k].death = false;
-                        stone[i].row=row_;
-                        stone[i].col=col_;
-                    }
-                    for(int k=0;k<16;k++)
-                    {
-                        if(canMove(i,k,stone[k].row,stone[k].col)&&!stone[i].death)
-                        {
-                            qDebug()<<row_<<' '<<col_<<"去c"<<stone[k].row<<' '<<stone[k].row;
-                            stone[i].row=row;
-                            stone[i].col=col;
-                            //stone[k].death=true;
-                            if(!isDefeated(1))
-                            {
-                                stone[k].death = false;
-                                stone[i].row=row_;
-                                stone[i].col=col_;
-                                return false;
-                            }
-                            // if(clicked != -1)
-                            stone[k].death = false;
-                            stone[i].row=row_;
-                            stone[i].col=col_;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    stone[generalId].death=true;//输了
-    return true;
-}
 
 void Gamescene::whoWin()
 {
     if(!stone[4].death&&stone[20].death)
     {
+        Lorekmusic =new QSoundEffect(this);
+        Lorekmusic->setSource(QUrl::fromLocalFile(":/Music/Lore.wav"));
+        Lorekmusic->setLoopCount(1);
+        Lorekmusic->play();
         reset();
         winMessageBox("提示", "本局结束，红方胜利.");
     }
 
     if(stone[4].death&&!stone[20].death)
     {
+        Lorekmusic =new QSoundEffect(this);
+        Lorekmusic->setSource(QUrl::fromLocalFile(":/Music/Lore.wav"));
+        Lorekmusic->setLoopCount(1);
+        Lorekmusic->play();
         reset();
         winMessageBox("提示", "本局结束，黑方胜利.");
     }
