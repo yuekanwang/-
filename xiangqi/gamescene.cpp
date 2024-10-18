@@ -745,12 +745,15 @@ bool Gamescene::isOver()
             {
                 for(int col=0;col<9;col++)
                 {
-                    if(canMove(i,-1,row,col)&&!stone[i].death)
+                    if(canMove(i,-1,row,col)&&!stone[i].death&&!getStoneId(row,col))
                     {
                         stone[i].row=row;
                         stone[i].col=col;
                         if(!isDefeated(1))
                         {
+                            qDebug()<<row_<<' '<<col_<<"去-1"<<row<<' '<<col;
+                            stone[i].row=row_;
+                            stone[i].col=col_;
                             return false;
                         }
                         // if(clicked != -1)
@@ -759,12 +762,17 @@ bool Gamescene::isOver()
                     }
                     for(int k=16;k<32;k++)
                     {
-                        if(canMove(i,k,row,col)&&!stone[i].death)
+                        if(canMove(i,k,stone[k].row,stone[k].col)&&!stone[i].death)
                         {
                             stone[i].row=row;
                             stone[i].col=col;
+                            //stone[k].death=true;
                             if(!isDefeated(1))
                             {
+                               qDebug()<<row_<<' '<<col_<<"去c"<<stone[k].row<<' '<<stone[k].col;
+                                stone[i].row=row_;
+                                stone[i].col=col_;
+                                stone[k].death = false;
                                 return false;
                             }
                             // if(clicked != -1)
@@ -788,12 +796,15 @@ bool Gamescene::isOver()
             {
                 for(int col=0;col<9;col++)
                 {
-                    if(canMove(i,-1,row,col)&&!stone[i].death)
+                    if(canMove(i,-1,row,col)&&!stone[i].death&&!getStoneId(row,col))
                     {
                         stone[i].row=row;
                         stone[i].col=col;
                         if(!isDefeated(1))
                         {
+                            qDebug()<<row_<<' '<<col_<<"去-1"<<row<<' '<<col;
+                            stone[i].row=row_;
+                            stone[i].col=col_;
                             return false;
                         }
                         // if(clicked != -1)
@@ -803,12 +814,17 @@ bool Gamescene::isOver()
                     }
                     for(int k=0;k<16;k++)
                     {
-                        if(canMove(i,k,row,col)&&!stone[i].death)
+                        if(canMove(i,k,stone[k].row,stone[k].col)&&!stone[i].death)
                         {
+                            qDebug()<<row_<<' '<<col_<<"去c"<<stone[k].row<<' '<<stone[k].row;
                             stone[i].row=row;
                             stone[i].col=col;
+                            //stone[k].death=true;
                             if(!isDefeated(1))
                             {
+                                stone[k].death = false;
+                                stone[i].row=row_;
+                                stone[i].col=col_;
                                 return false;
                             }
                             // if(clicked != -1)
