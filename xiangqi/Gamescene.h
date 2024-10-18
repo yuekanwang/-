@@ -63,6 +63,8 @@ public:
     QSoundEffect *stonemovemusic;
     //设置将军音效
     QSoundEffect *attackmusic;
+    //设置将死音效
+    QSoundEffect *Lorekmusic;
 
     //处理被将军的情况
     void reset();

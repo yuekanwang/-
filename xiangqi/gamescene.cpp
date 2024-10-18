@@ -304,10 +304,14 @@ void Gamescene::mousePressEvent(QMouseEvent *ev)
                 //这里弄个声音提示将军了
                 if(isOver())
                 {
+                    Lorekmusic =new QSoundEffect(this);
+                    Lorekmusic->setSource(QUrl::fromLocalFile(":/Music/Lore.wav"));
+                    Lorekmusic->setLoopCount(1);
+                    Lorekmusic->play();
                     whoWin();
-                    qDebug()<<stone[20].row<<' '<<stone[20].col;
-
-
+                    redtrue=true;
+                    //update();
+                    return;
                 }
                 attackmusic =new QSoundEffect(this);
                 attackmusic->setSource(QUrl::fromLocalFile(":/Music/attack.wav"));
