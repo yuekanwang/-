@@ -5,6 +5,8 @@
 #include <QMediaPlayer>
 #include <QAudioOutput>
 #include <QSoundEffect>
+#include <stack>
+#include<vector>
 #include "Stone.h"
 namespace Ui {
 class Gamescene;
@@ -43,6 +45,12 @@ public:
     bool canMovePAO(int moveId, int killId, int row, int col);
     bool canMoveBING(int moveId, int killId, int row, int col);
 
+    std::stack<std::vector<Stone>> Regret;//悔棋栈，用来存储每一步的棋盘现状，便于悔棋
+    void Regretstone();//悔棋函数
+    void Regretpacket();//把当前棋盘装入悔棋栈的函数
+
+    //悔棋
+    void withDraw();
 
     Stone stone[32];
     int r;//棋子半径
@@ -75,8 +83,7 @@ public:
     void whoWin();
     void winMessageBox(QString title, QString msg);
 
-    //悔棋
-    void withDraw();
+
 
 private:
     Ui::Gamescene *ui;

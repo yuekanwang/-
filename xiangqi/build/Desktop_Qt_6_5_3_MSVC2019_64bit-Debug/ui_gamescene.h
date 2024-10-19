@@ -21,6 +21,7 @@ class Ui_Gamescene
 public:
     QPushButton *pushButton;
     QPushButton *pushButton_2;
+    QPushButton *pushButton_3;
 
     void setupUi(QWidget *Gamescene)
     {
@@ -66,6 +67,9 @@ public:
         pushButton_2->setCheckable(true);
         pushButton_2->setChecked(true);
         pushButton_2->setAutoExclusive(true);
+        pushButton_3 = new QPushButton(Gamescene);
+        pushButton_3->setObjectName("pushButton_3");
+        pushButton_3->setGeometry(QRect(770, 530, 91, 51));
 
         retranslateUi(Gamescene);
 
@@ -77,6 +81,7 @@ public:
         Gamescene->setWindowTitle(QCoreApplication::translate("Gamescene", "Form", nullptr));
         pushButton->setText(QString());
         pushButton_2->setText(QCoreApplication::translate("Gamescene", "\351\237\263\344\271\220\346\211\223\345\274\200", nullptr));
+        pushButton_3->setText(QCoreApplication::translate("Gamescene", "\346\202\224\346\243\213", nullptr));
     } // retranslateUi
 
 };

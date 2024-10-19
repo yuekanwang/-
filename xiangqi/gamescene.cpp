@@ -23,6 +23,10 @@ Gamescene::Gamescene(QWidget *parent)//构造函数（初始化游戏）
     selectid=-1;//初始化（未选择）
     redtrue=true;//初始化（红方先行）
 
+    connect(ui->pushButton_3,&QPushButton::clicked,[=](){
+        Regretstone();
+    });//悔棋按钮连接
+
     //游戏对战页面背景音乐
     scenemusic=new QMediaPlayer(this);//播放器
     control=new QAudioOutput(this);//控制器
@@ -44,17 +48,6 @@ Gamescene::Gamescene(QWidget *parent)//构造函数（初始化游戏）
         }
     });
     scenemusic->play();
-
-    //悔棋按钮默认红色
-    ui->pushButton_3->setStyleSheet("color:red;font: 30pt 华文行楷;background-color:#ffbb46;border-radius:40px;border-style: solid; border-width: 2px; border-radius: 10px; border-color: red;");
-
-    //悔棋按钮
-    connect(ui->pushButton_3,&QPushButton::clicked,[=](){
-
-        withDraw();
-
-    });
-
 }
 
 Gamescene::~Gamescene()
@@ -62,6 +55,48 @@ Gamescene::~Gamescene()
 
     delete ui;
 }
+
+
+
+
+void Gamescene::Regretpacket()
+{
+    std::vector<Stone> Stoneboard_now;//记录当前棋盘
+    for(int i=0;i<32;i++)
+    {
+        Stoneboard_now.push_back(stone[i]);//把每个棋子的情况弄进去
+    }
+    Regret.push(Stoneboard_now);//把当前棋盘弄进悔棋栈
+}
+
+
+void Gamescene::Regretstone()
+{
+    std::vector<Stone> Stoneboard_last;//装载上一步棋盘
+    if(!Regret.empty())
+    {
+        Stoneboard_last=Regret.top();
+        Regret.pop();
+
+        for(int i=0;i<32;i++)
+        {
+            stone[i]=Stoneboard_last[i];
+        }
+        redtrue=!redtrue;
+        update();
+    }
+    else
+    {
+        QMessageBox test;
+        test.setWindowTitle("悔棋失败！");
+        test.setText("没有能悔的棋子了。");
+        test.exec();
+    }
+
+    return;
+}
+
+
 
 int Gamescene::getStoneId(int row,int col)
 {
@@ -155,12 +190,13 @@ void Gamescene::paintEvent(QPaintEvent *)
     {
         ui->pushButton->setText("红方回合");
         ui->pushButton->setStyleSheet("color:red;font: 30pt 华文行楷;background-color:#ffbb46;border-radius:40px;border-style: solid; border-width: 2px; border-radius: 10px; border-color: red;");
-
+        ui->pushButton_3->setStyleSheet("color:black;font: 30pt 华文行楷;background-color:#ffbb46;border-radius:40px;border-style: solid; border-width: 2px; border-radius: 10px; border-color: black;");
     }
     else
     {
         ui->pushButton->setText("黑方回合");
         ui->pushButton->setStyleSheet("color:black;font: 30pt 华文行楷;background-color:#ffbb46;border-radius:40px;border-style: solid; border-width: 2px; border-radius: 10px; border-color: black;");
+        ui->pushButton_3->setStyleSheet("color:red;font: 30pt 华文行楷;background-color:#ffbb46;border-radius:40px;border-style: solid; border-width: 2px; border-radius: 10px; border-color: red;");
     }
 }
 
@@ -281,6 +317,7 @@ void Gamescene::mousePressEvent(QMouseEvent *ev)
     {
         if(canMove(selectid,clicked, row, col ))
         {
+             Regretpacket();//记录当前棋盘
 
             int row_=stone[selectid].row;//记录原本的位置，若是触发“送将”则回溯
             int col_=stone[selectid].col;
@@ -309,7 +346,7 @@ void Gamescene::mousePressEvent(QMouseEvent *ev)
             stonemovemusic->setSource(QUrl::fromLocalFile(":/Music/StoneKill.wav"));
             stonemovemusic->setLoopCount(1);
             stonemovemusic->play();
-            if(isDefeated(1))
+            if(isDefeated(1)&&!stone[4].death&&!stone[20].death)
             {
                 //这里弄个声音提示将军了
                 attackmusic =new QSoundEffect(this);
@@ -747,6 +784,7 @@ void Gamescene::whoWin()
         Lorekmusic->setSource(QUrl::fromLocalFile(":/Music/Lore.wav"));
         Lorekmusic->setLoopCount(1);
         Lorekmusic->play();
+        redtrue=true;//调整开局先手为红方
         reset();
         winMessageBox("提示", "本局结束，红方胜利.");
     }
@@ -757,6 +795,7 @@ void Gamescene::whoWin()
         Lorekmusic->setSource(QUrl::fromLocalFile(":/Music/Lore.wav"));
         Lorekmusic->setLoopCount(1);
         Lorekmusic->play();
+         redtrue=true;//调整开局先手为红方
         reset();
         winMessageBox("提示", "本局结束，黑方胜利.");
     }
