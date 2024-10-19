@@ -101,6 +101,9 @@ QPushButton:hover
      <height>51</height>
     </rect>
    </property>
+   <property name="cursor">
+    <cursorShape>PointingHandCursor</cursorShape>
+   </property>
    <property name="text">
     <string>悔棋</string>
    </property>

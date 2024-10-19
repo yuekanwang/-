@@ -70,6 +70,7 @@ public:
         pushButton_3 = new QPushButton(Gamescene);
         pushButton_3->setObjectName("pushButton_3");
         pushButton_3->setGeometry(QRect(770, 530, 91, 51));
+        pushButton_3->setCursor(QCursor(Qt::PointingHandCursor));
 
         retranslateUi(Gamescene);
 
