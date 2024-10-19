@@ -75,6 +75,9 @@ public:
     void whoWin();
     void winMessageBox(QString title, QString msg);
 
+    //悔棋
+    void withDraw();
+
 private:
     Ui::Gamescene *ui;
     bool isdead(int id);

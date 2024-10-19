@@ -45,6 +45,16 @@ Gamescene::Gamescene(QWidget *parent)//构造函数（初始化游戏）
     });
     scenemusic->play();
 
+    //悔棋按钮默认红色
+    ui->pushButton_3->setStyleSheet("color:red;font: 30pt 华文行楷;background-color:#ffbb46;border-radius:40px;border-style: solid; border-width: 2px; border-radius: 10px; border-color: red;");
+
+    //悔棋按钮
+    connect(ui->pushButton_3,&QPushButton::clicked,[=](){
+
+        withDraw();
+
+    });
+
 }
 
 Gamescene::~Gamescene()
@@ -308,6 +318,12 @@ void Gamescene::mousePressEvent(QMouseEvent *ev)
                 attackmusic->play();
             }
             whoWin();
+            if(redtrue)//红方回合，要悔棋就是黑方悔，所以搞成黑色
+                ui->pushButton_3->setStyleSheet("color:black;font: 30pt 华文行楷;background-color:#ffbb46;border-radius:40px;border-style: solid; border-width: 2px; border-radius: 10px; border-color: black;");
+
+            else
+                ui->pushButton_3->setStyleSheet("color:red;font: 30pt 华文行楷;background-color:#ffbb46;border-radius:40px;border-style: solid; border-width: 2px; border-radius: 10px; border-color: red;");
+
             //判断完再换边
             redtrue = !redtrue;// 轮到对方
 
@@ -753,4 +769,11 @@ void Gamescene::winMessageBox(QString title, QString msg)
     msgBox.setStandardButtons(QMessageBox::Ok);
     msgBox.setDefaultButton(QMessageBox::Ok);
     msgBox.exec();
+}
+
+
+void Gamescene::withDraw()//悔棋
+{
+    QMessageBox test;
+    test.exec();
 }
