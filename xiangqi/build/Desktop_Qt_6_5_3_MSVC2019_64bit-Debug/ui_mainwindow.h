@@ -31,10 +31,11 @@ public:
     QGridLayout *gridLayout;
     QWidget *widget;
     QVBoxLayout *verticalLayout;
-    QSpacerItem *horizontalSpacer_2;
-    QPushButton *pushButton;
     QSpacerItem *horizontalSpacer;
+    QPushButton *pushButton;
+    QSpacerItem *horizontalSpacer_2;
     QSpacerItem *verticalSpacer;
+    QPushButton *pushButton_2;
     QMenuBar *menuBar;
     QMenu *menu;
 
@@ -63,9 +64,9 @@ public:
 
         gridLayout->addWidget(widget, 1, 1, 1, 1);
 
-        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        gridLayout->addItem(horizontalSpacer_2, 3, 2, 1, 1);
+        gridLayout->addItem(horizontalSpacer, 3, 0, 1, 1);
 
         pushButton = new QPushButton(centralwidget);
         pushButton->setObjectName("pushButton");
@@ -100,13 +101,18 @@ public:
 
         gridLayout->addWidget(pushButton, 3, 1, 1, 1);
 
-        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        gridLayout->addItem(horizontalSpacer, 3, 0, 1, 1);
+        gridLayout->addItem(horizontalSpacer_2, 3, 2, 1, 1);
 
         verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
-        gridLayout->addItem(verticalSpacer, 4, 1, 1, 1);
+        gridLayout->addItem(verticalSpacer, 5, 1, 1, 1);
+
+        pushButton_2 = new QPushButton(centralwidget);
+        pushButton_2->setObjectName("pushButton_2");
+
+        gridLayout->addWidget(pushButton_2, 4, 1, 1, 1);
 
         MainWindow->setCentralWidget(centralwidget);
         menuBar = new QMenuBar(MainWindow);
@@ -128,7 +134,8 @@ public:
     {
         MainWindow->setWindowTitle(QCoreApplication::translate("MainWindow", "MainWindow", nullptr));
         action->setText(QCoreApplication::translate("MainWindow", "\351\200\200\345\207\272\346\270\270\346\210\217", nullptr));
-        pushButton->setText(QCoreApplication::translate("MainWindow", "\345\274\200\345\247\213\346\270\270\346\210\217", nullptr));
+        pushButton->setText(QCoreApplication::translate("MainWindow", "\345\217\214\344\272\272\346\270\270\346\210\217", nullptr));
+        pushButton_2->setText(QCoreApplication::translate("MainWindow", "\350\201\224\346\234\272", nullptr));
         menu->setTitle(QCoreApplication::translate("MainWindow", "\351\200\200\345\207\272\346\270\270\346\210\217", nullptr));
     } // retranslateUi
 
