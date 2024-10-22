@@ -277,12 +277,16 @@ void Gamescene::mousePressEvent(QMouseEvent *ev)
 {
     QPoint pt = ev->pos();
     //将pt转化成棋盘的像行列值
+    int row,col;
     //判断这个行列值上面有没有棋子
-    int row, col;
-
     //点击棋盘外面就不做处理
     if(!getRowCol(pt, row, col))
         return;
+
+    StoneMove(row,col);
+}
+void Gamescene::StoneMove(int row,int col)
+{
 
     clicked = -1;
     int i;
@@ -354,7 +358,6 @@ void Gamescene::mousePressEvent(QMouseEvent *ev)
                 attackmusic->setLoopCount(1);
                 attackmusic->play();
             }
-            whoWin();
             if(redtrue)//红方回合，要悔棋就是黑方悔，所以搞成黑色
                 ui->pushButton_3->setStyleSheet("color:black;font: 30pt 华文行楷;background-color:#ffbb46;border-radius:40px;border-style: solid; border-width: 2px; border-radius: 10px; border-color: black;");
 
@@ -363,7 +366,7 @@ void Gamescene::mousePressEvent(QMouseEvent *ev)
 
             //判断完再换边
             redtrue = !redtrue;// 轮到对方
-
+            whoWin();
         }
 
     }
@@ -700,7 +703,7 @@ void Gamescene::reset() // 分出胜负之后重置界面
 
     selectid = -1;
     clicked = -1;
-    //redtrue = true;
+    redtrue = true;//强制初始化为红方
 
     // 刷新界面
     update();
@@ -784,7 +787,6 @@ void Gamescene::whoWin()
         Lorekmusic->setSource(QUrl::fromLocalFile(":/Music/Lore.wav"));
         Lorekmusic->setLoopCount(1);
         Lorekmusic->play();
-        redtrue=true;//调整开局先手为红方
         reset();
         winMessageBox("提示", "本局结束，红方胜利.");
     }
@@ -795,7 +797,6 @@ void Gamescene::whoWin()
         Lorekmusic->setSource(QUrl::fromLocalFile(":/Music/Lore.wav"));
         Lorekmusic->setLoopCount(1);
         Lorekmusic->play();
-         redtrue=true;//调整开局先手为红方
         reset();
         winMessageBox("提示", "本局结束，黑方胜利.");
     }

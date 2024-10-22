@@ -1,5 +1,6 @@
 #include "Netgame.h"
 #include<QDebug>
+#include<QMessageBox>
 NetGame::NetGame(bool isServer)
 {
     Server=NULL;
@@ -31,8 +32,25 @@ NetGame::NetGame(bool isServer)
     }
 }
 
+
+
 NetGame::~NetGame()
 {
+
+}
+
+
+
+void NetGame::mousePressEvent(QMouseEvent *ev)
+{
+    Gamescene::mousePressEvent(ev);//首先调用父类点击函数
+    int row,col;
+    /* 然后发送报文给对方 */
+    char buf[3];
+    buf[0]=2;//表示选择位置报文
+    buf[1]=row;
+    buf[2]=col;
+    Socket->write(buf,3);//无论是服务器还是客户端，都用Socket发送报文出去
 
 }
 
@@ -42,23 +60,63 @@ void NetGame::afterConnection()
 
     Socket=Server->nextPendingConnection();//返回一个客户端（Socket）
 
-    qDebug()<<"123";
-    /* 给对方发送数据 */
-    char buf[2];
-    buf[0]=1;
-    buf[0]=0;
-    Socket->write(buf,2);
+    connect(Socket,&QTcpSocket::readyRead,this,&NetGame::slotRect);
+    //站在服务器角度，通过Socket接收数据。
 
+    qDebug()<<"123";
+
+    /* 给服务器对方发送选方数据 */
+    char buf[2];
+    QMessageBox::StandardButton ret;
+    ret=QMessageBox::question(NULL,"选红黑方","是否为服务器端选择红方（客户端玩家自动选择对应颜色）。");
+    if(ret==QMessageBox::No)
+    {
+        buf[0]=1;
+        buf[1]=0;//输入0，自己选黑方，对方选红方
+    }
+    else
+    {
+        buf[0]=1;
+        buf[1]=1;//输入1，自己选红方，对方选黑方
+    }
+
+
+    Socket->write(buf,2);
+    if(buf[1]==1)//棋盘翻转
+    {
+        for(int i=0;i<32;i++)
+        {
+            stone[i].col=8-stone[i].col;
+            stone[i].row=9-stone[i].row;
+        }
+    }
 }
-void NetGame::slotRect()
+
+
+void NetGame::slotRect()//接收
 {
-    QByteArray ba=Socket->readAll();//字节数组接收存放
+    QByteArray ba=Socket->readAll();//字节数组接收报文存放
 
     char cmd=ba[0];
     if(cmd==1)
     {
-        chat data=ba[1];
-        init(data==1);
+        char data=ba[1];
+        qDebug()<<data;
+        if(data==0)//棋盘翻转
+        {
+            for(int i=0;i<32;i++)
+            {
+                stone[i].col=8-stone[i].col;
+                stone[i].row=9-stone[i].row;
+            }
+        }
+    }
+
+    else if(cmd==2)
+    {
+        int row=ba[1];
+        int col=ba[2];
+
     }
 
 }

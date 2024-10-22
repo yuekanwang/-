@@ -34,6 +34,7 @@ public:
 
     //鼠标点击事件
     virtual void mousePressEvent(QMouseEvent *event);
+    virtual void StoneMove(int row,int col);//移动函数
 
     //象棋移动的规则[将  士  象  马  车  炮  兵]
     bool canMove(int moveId, int killId, int row, int col);

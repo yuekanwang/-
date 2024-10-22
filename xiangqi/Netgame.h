@@ -18,8 +18,10 @@ public:
     NetGame(bool isServer);
     ~NetGame();
 
+    void mousePressEvent(QMouseEvent *ev);//重载鼠标点击函数
+
     QTcpServer * Server;//服务器端
-    QTcpSocket * Socket;//客户端
+    QTcpSocket * Socket;//数据接收或发送器
 
     void afterConnection();//连接后
     void slotRect();
