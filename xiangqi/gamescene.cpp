@@ -8,10 +8,11 @@
 #include <math.h>
 #include<QMessageBox>
 Gamescene::Gamescene(QWidget *parent)//构造函数（初始化游戏）
-    : QWidget(parent)
-    , ui(new Ui::Gamescene)
 {
+    ui=new Ui::Gamescene;
     ui->setupUi(this);
+
+
     this->setWindowTitle("中国象棋对战");//窗口名字设置为“中国象棋对战”
     this->setFixedSize(995,678);//固定好窗口的分辨率大小
 
@@ -32,7 +33,7 @@ Gamescene::Gamescene(QWidget *parent)//构造函数（初始化游戏）
     control=new QAudioOutput(this);//控制器
     scenemusic->setAudioOutput(control);//播放器输入由控制器控制
     control->setVolume(0.3);//音量
-    scenemusic->setSource(QUrl("qrc:/Music/SceneMusic2.mp3"));
+    scenemusic->setSource(QUrl("qrc:/Music/SceneMusic22.mp3"));
     scenemusic->setLoops(-1);
 
     connect(ui->pushButton_2,&QPushButton::clicked,[=](){
@@ -285,6 +286,9 @@ void Gamescene::mousePressEvent(QMouseEvent *ev)
 
     StoneMove(row,col);
 }
+
+
+
 void Gamescene::StoneMove(int row,int col)
 {
 
@@ -321,10 +325,10 @@ void Gamescene::StoneMove(int row,int col)
     {
         if(canMove(selectid,clicked, row, col ))
         {
-             Regretpacket();//记录当前棋盘
+            Regretpacket();//记录当前棋盘
 
-            int row_=stone[selectid].row;//记录原本的位置，若是触发“送将”则回溯
-            int col_=stone[selectid].col;
+            //int row_=stone[selectid].row;//记录原本的位置，若是触发“送将”则回溯
+            //int col_=stone[selectid].col;
             // 移动棋子的逻辑
             stone[selectid].row = row;
             stone[selectid].col = col;
@@ -812,8 +816,4 @@ void Gamescene::winMessageBox(QString title, QString msg)
 }
 
 
-void Gamescene::withDraw()//悔棋
-{
-    QMessageBox test;
-    test.exec();
-}
+

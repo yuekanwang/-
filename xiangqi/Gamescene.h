@@ -34,24 +34,22 @@ public:
 
     //鼠标点击事件
     virtual void mousePressEvent(QMouseEvent *event);
-    virtual void StoneMove(int row,int col);//移动函数
+    void StoneMove(int row,int col);//移动函数
 
     //象棋移动的规则[将  士  象  马  车  炮  兵]
-    bool canMove(int moveId, int killId, int row, int col);
-    bool canMoveJIANG(int moveId, int killId, int row, int col);
-    bool canMoveSHI(int moveId, int killId, int row, int col);
-    bool canMoveXIANG(int moveId, int killId, int row, int col);
+    virtual bool canMove(int moveId, int killId, int row, int col);
+    virtual bool canMoveJIANG(int moveId, int killId, int row, int col);
+    virtual bool canMoveSHI(int moveId, int killId, int row, int col);
+    virtual bool canMoveXIANG(int moveId, int killId, int row, int col);
     bool canMoveMA(int moveId, int killId, int row, int col);
     bool canMoveCHE(int moveId, int killId, int row, int col);
     bool canMovePAO(int moveId, int killId, int row, int col);
-    bool canMoveBING(int moveId, int killId, int row, int col);
+    virtual bool canMoveBING(int moveId, int killId, int row, int col);
 
     std::stack<std::vector<Stone>> Regret;//悔棋栈，用来存储每一步的棋盘现状，便于悔棋
     void Regretstone();//悔棋函数
     void Regretpacket();//把当前棋盘装入悔棋栈的函数
 
-    //悔棋
-    void withDraw();
 
     Stone stone[32];
     int r;//棋子半径
@@ -84,14 +82,12 @@ public:
     void whoWin();
     void winMessageBox(QString title, QString msg);
 
-
-
-private:
-    Ui::Gamescene *ui;
     bool isdead(int id);
     int getStoneId(int row,int col);
     //车 炮 的功能辅助函数   判断两个点是否在一个直线上面,且返回直线之间的棋子个数
     int getStoneCountAtLine(int row1,int col1,int row2,int col2);
+
+    Ui::Gamescene *ui;
 };
 
 #endif // GAMESCENE_H
